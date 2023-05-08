@@ -11,8 +11,18 @@ app.use(express.json());
 app.use(cors());
 
 // mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
-mongoose.connect(process.env.MONGODB_URI);
+// mongoose.connect(process.env.MONGODB_URI);
 
+//await connect to database
+const connectDB = async () => {
+  try {
+    const conn = await mongoose.connect(process.env.MONGODB_URI);
+    console.log(`MongoDB Connected: ${conn.connection.host}`);
+  } catch (error) {
+    console.log(error);
+    process.exit(1);
+  }
+};
 
 const StudentSchema = new mongoose.Schema({
   studentId: String,
@@ -67,4 +77,7 @@ app.post('/api/log-time', async (req, res) => {
 // });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+connectDB().then(() => {
+  app.listen(PORT, () => console.log(`Server started on port ${PORT}`));  
+});
+

@@ -1,13 +1,12 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const dotenv = require('dotenv');
+import express, { json } from 'express';
+import { connect, Schema, model } from 'mongoose';
+import cors from 'cors';
+import { config } from 'dotenv';
 // const path = require('path');
 
-dotenv.config();
-
+config();
 const app = express();
-app.use(express.json());
+app.use(json());
 app.use(cors());
 
 // mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
@@ -25,7 +24,7 @@ const elapsedTime = (start, end) => {
 //await connect to database
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGODB_URI);
+    const conn = await connect(process.env.MONGODB_URI);
     console.log(`MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
     console.log(error);
@@ -33,7 +32,7 @@ const connectDB = async () => {
   }
 };
 
-const StudentSchema = new mongoose.Schema({
+const StudentSchema = new Schema({
   studentId: String,
   classes: [String],
   lastLogin: Number,
@@ -47,7 +46,7 @@ const StudentSchema = new mongoose.Schema({
   }],
 });
 
-const Student = mongoose.model('Student', StudentSchema);
+const Student = model('Student', StudentSchema);
 
 // grabs student by id and returns student object
 app.get('/api/student', async (req, res) => {

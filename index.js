@@ -5,6 +5,7 @@ import { config } from 'dotenv';
 // const path = require('path');
 
 config();
+console.log("starting app with env: ", process.env.NODE_ENV);
 const app = express();
 app.use(json());
 app.use(cors());
@@ -112,4 +113,3 @@ const PORT = process.env.PORT || 5000;
 connectDB().then(() => {
   app.listen(PORT, () => console.log(`Server started on port ${PORT}`));  
 });
-

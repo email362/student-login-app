@@ -1,3 +1,6 @@
+import AdminJS from 'adminjs';
+import AdminJSExpress from '@adminjs/express';
+import * as AdminJSMongoose from '@adminjs/mongoose';
 import express, { json } from 'express';
 import { connect, Schema, model } from 'mongoose';
 import cors from 'cors';
@@ -5,9 +8,42 @@ import { config } from 'dotenv';
 // const path = require('path');
 
 config();
+
+const StudentSchema = new Schema({
+  studentId: String,
+  classes: [String],
+  lastLogin: Number,
+  lastLogout: Number,
+  lastClass: String,
+  loginTimestamps: [{
+    className: String,
+    loginTime: Number,
+    logoutTime: Number,
+    totalTime: Number,
+  }],
+});
+
+const Student = model('Student', StudentSchema);
+
+AdminJS.registerAdapter({
+  Resource: AdminJSMongoose.Resource,
+  Database: AdminJSMongoose.Database,
+})
+
+const adminOptions = {
+  resources: [
+    Student
+  ],
+};
+
 const app = express();
 app.use(json());
 app.use(cors());
+
+const admin = new AdminJS(adminOptions);
+
+const adminRouter = AdminJSExpress.buildRouter(admin);
+app.use(admin.options.rootPath, adminRouter);
 
 // mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
 // mongoose.connect(process.env.MONGODB_URI);
@@ -32,21 +68,7 @@ const connectDB = async () => {
   }
 };
 
-const StudentSchema = new Schema({
-  studentId: String,
-  classes: [String],
-  lastLogin: Number,
-  lastLogout: Number,
-  lastClass: String,
-  loginTimestamps: [{
-    className: String,
-    loginTime: Number,
-    logoutTime: Number,
-    totalTime: Number,
-  }],
-});
 
-const Student = model('Student', StudentSchema);
 
 // grabs student by id and returns student object
 app.get('/api/student', async (req, res) => {
@@ -110,6 +132,9 @@ app.post('/api/logout', async (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 connectDB().then(() => {
-  app.listen(PORT, () => console.log(`Server started on port ${PORT}`));  
+  app.listen(PORT, () => {
+    console.log(`Server started on port ${PORT}`);
+    console.log(`AdminJS started on http://localhost:${PORT}${admin.options.rootPath}`);
+  });
 });
 

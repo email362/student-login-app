@@ -20,6 +20,7 @@ const Components = {
 config();
 
 const StudentSchema = new Schema({
+  studentName: String,
   studentId: String,
   classes: [String],
   lastLogin: Number,

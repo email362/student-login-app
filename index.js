@@ -5,7 +5,17 @@ import express, { json } from 'express';
 import { connect, Schema, model } from 'mongoose';
 import cors from 'cors';
 import { config } from 'dotenv';
-// const path = require('path');
+
+// import { useTranslation } from 'adminjs';
+
+import { ComponentLoader } from 'adminjs';
+
+const componentLoader = new ComponentLoader();
+
+const Components = {
+  Dashboard: componentLoader.add('Dashboard', './custom-dashboard.jsx'),
+  // other custom components
+};
 
 config();
 
@@ -34,6 +44,14 @@ const adminOptions = {
   resources: [
     Student
   ],
+  dashboard: {
+    component: Components.Dashboard,
+  },
+  componentLoader,
+  branding: {
+    companyName: 'Student Login',
+    logo: 'https://picsum.photos/200'
+  },
 };
 
 const app = express();

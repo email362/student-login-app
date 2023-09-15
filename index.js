@@ -42,9 +42,19 @@ AdminJS.registerAdapter({
 })
 
 const adminOptions = {
-  resources: [
-    Student
-  ],
+  // resources: [
+  //   Student
+  // ],
+  resources: [{
+    resource: Student,
+    options: {
+      properties: {
+        _id: {
+          isVisible: false,
+        },
+      },
+    },
+  }],
   dashboard: {
     component: Components.Dashboard,
   },

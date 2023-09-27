@@ -73,8 +73,11 @@ const admin = new AdminJS(adminOptions);
 
 const adminRouter = AdminJSExpress.buildRouter(admin);
 app.use(admin.options.rootPath, adminRouter);
-
-admin.watch();
+if (process.env.NODE_ENV === 'production') {
+  await admin.initialize();
+} else {
+  admin.watch();
+} 
 
 // mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
 // mongoose.connect(process.env.MONGODB_URI);

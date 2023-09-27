@@ -63,6 +63,7 @@ const adminOptions = {
     companyName: 'Student Login',
     logo: 'https://picsum.photos/200'
   },
+  rootPath: '/admin',
 };
 
 const app = express();

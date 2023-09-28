@@ -2,12 +2,16 @@ import express, { json } from 'express';
 import { connect, Schema, model } from 'mongoose';
 import cors from 'cors';
 import { config } from 'dotenv';
+import { join } from 'path';
+import * as url from 'url';
 
 
 
 // import { useTranslation } from 'adminjs';
 
 config();
+
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 const StudentSchema = new Schema({
   studentName: String,
@@ -27,8 +31,12 @@ const StudentSchema = new Schema({
 const Student = model('Student', StudentSchema);
 
 const app = express();
+
 app.use(json());
 app.use(cors());
+app.use(express.static(__dirname + '/build'));
+console.log("dirname", __dirname);
+
 
 // mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
 // mongoose.connect(process.env.MONGODB_URI);
@@ -101,7 +109,10 @@ app.post('/api/logout', async (req, res) => {
   res.json(updatedStudent);
 });
 
-// app.use(express.static('../student-login-frontend/dist'));
+
+app.get('/admin', (req, res) => {
+  res.sendFile(join(__dirname, 'build', 'index.html'));
+});
 
 //default homepage
 app.get('/', (req, res) => {

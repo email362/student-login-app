@@ -6,9 +6,6 @@ import { join } from 'path';
 import * as url from 'url';
 
 
-
-// import { useTranslation } from 'adminjs';
-
 config();
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
@@ -109,6 +106,15 @@ app.post('/api/logout', async (req, res) => {
   res.json(updatedStudent);
 });
 
+app.get('/api/students', async (req, res) => {
+  let students = null;
+  try {
+    students = await Student.find({});
+    res.json(students);
+  } catch {
+    res.json({message:'Students not found'});
+  }
+});
 
 app.get('/admin', (req, res) => {
   res.sendFile(join(__dirname, 'build', 'index.html'));

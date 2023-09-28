@@ -1,24 +1,11 @@
-import AdminJS from 'adminjs';
-import AdminJSExpress from '@adminjs/express';
-import * as AdminJSMongoose from '@adminjs/mongoose';
 import express, { json } from 'express';
 import { connect, Schema, model } from 'mongoose';
 import cors from 'cors';
 import { config } from 'dotenv';
 
-process.env.NODE_ENV = 'production';
 
 
 // import { useTranslation } from 'adminjs';
-
-import { ComponentLoader } from 'adminjs';
-
-const componentLoader = new ComponentLoader();
-
-const Components = {
-  Dashboard: componentLoader.add('Dashboard', './custom-dashboard.jsx'),
-  // other custom components
-};
 
 config();
 
@@ -39,53 +26,9 @@ const StudentSchema = new Schema({
 
 const Student = model('Student', StudentSchema);
 
-AdminJS.registerAdapter({
-  Resource: AdminJSMongoose.Resource,
-  Database: AdminJSMongoose.Database,
-})
-
-const adminOptions = {
-  // resources: [
-  //   Student
-  // ],
-  resources: [{
-    resource: Student,
-    options: {
-      properties: {
-        _id: {
-          isVisible: false,
-        },
-      },
-    },
-  }],
-  dashboard: {
-    component: Components.Dashboard,
-  },
-  componentLoader,
-  branding: {
-    companyName: 'Student Login',
-    logo: 'https://picsum.photos/200'
-  },
-  rootPath: '/admin',
-};
-
 const app = express();
 app.use(json());
 app.use(cors());
-app.use(express.static('public'));
-
-const admin = new AdminJS(adminOptions);
-
-const adminRouter = AdminJSExpress.buildRouter(admin);
-app.use(admin.options.rootPath, adminRouter);
-
-// await admin.initialize();
-
-// if (process.env.NODE_ENV === 'production') {
-  // await admin.initialize();
-// } else {
-//   admin.watch();
-// } 
 
 // mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
 // mongoose.connect(process.env.MONGODB_URI);
@@ -160,11 +103,10 @@ app.post('/api/logout', async (req, res) => {
 
 // app.use(express.static('../student-login-frontend/dist'));
 
-// //default homepage
-// app.get('/', (req, res) => {
-//   // send built folder
-//   res.sendFile(path.join(__dirname, '..', 'student-login-frontend', 'dist', 'index.html'));
-// });
+//default homepage
+app.get('/', (req, res) => {
+  res.json({message: "Welcome to the student login API"});
+});
 
 // // catch all other routes
 // app.get('*', (req, res) => {
@@ -176,7 +118,6 @@ const PORT = process.env.PORT || 5000;
 connectDB().then(() => {
   app.listen(PORT, () => {
     console.log(`Server started on port ${PORT}`);
-    console.log(`AdminJS started on http://localhost:${PORT}${admin.options.rootPath}`);
   });
 });
 

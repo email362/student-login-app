@@ -31,7 +31,7 @@ const app = express();
 
 app.use(json());
 app.use(cors());
-app.use(express.static(__dirname + '/build'));
+app.use(express.static(__dirname + '/buildAdmin'));
 console.log("dirname", __dirname);
 
 
@@ -117,7 +117,7 @@ app.get('/api/students', async (req, res) => {
 });
 
 app.get('/admin', (req, res) => {
-  res.sendFile(join(__dirname, 'build', 'index.html'));
+  res.sendFile(join(__dirname, 'buildAdmin', 'index.html'));
 });
 
 //default homepage

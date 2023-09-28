@@ -6,6 +6,9 @@ import { connect, Schema, model } from 'mongoose';
 import cors from 'cors';
 import { config } from 'dotenv';
 
+process.env.NODE_ENV = 'production';
+
+
 // import { useTranslation } from 'adminjs';
 
 import { ComponentLoader } from 'adminjs';
@@ -69,16 +72,20 @@ const adminOptions = {
 const app = express();
 app.use(json());
 app.use(cors());
+app.use(express.static('public'));
 
 const admin = new AdminJS(adminOptions);
 
 const adminRouter = AdminJSExpress.buildRouter(admin);
 app.use(admin.options.rootPath, adminRouter);
-if (process.env.NODE_ENV === 'production') {
-  await admin.initialize();
-} else {
-  admin.watch();
-} 
+
+// await admin.initialize();
+
+// if (process.env.NODE_ENV === 'production') {
+  // await admin.initialize();
+// } else {
+//   admin.watch();
+// } 
 
 // mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
 // mongoose.connect(process.env.MONGODB_URI);

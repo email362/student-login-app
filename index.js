@@ -131,7 +131,8 @@ app.delete('/api/students', async (req, res) => {
   const { studentId } = req.body;
   console.log(studentId);
   try {
-    await Student.findOneAndDelete({ studentId });
+    const deleted = await Student.findOneAndDelete({ studentId });
+    console.log("deleted",deleted);
     res.json({status:"Success", message:'Student deleted'});
   } catch {
     res.json({status:"Faliure",message:'Student not deleted'});

@@ -116,6 +116,18 @@ app.get('/api/students', async (req, res) => {
   }
 });
 
+app.post('/api/students', async (req, res) => {
+  const { studentName, studentId, classes } = req.body;
+  console.log(studentName, studentId, classes);
+  try {
+    await Student.create({ studentName, studentId, classes });
+    res.json({message:'Student created'});
+  } catch {
+    res.json({message:'Student not created'});
+  }
+});
+
+
 app.get('/admin', async (req, res) => {
   res.sendFile(join(__dirname, 'buildAdmin', 'adminHome.html'));
 });

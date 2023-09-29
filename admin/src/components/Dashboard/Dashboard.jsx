@@ -6,7 +6,7 @@ function Dashboard() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:5100/api/students')
+    fetch('https://vivacious-jade-nightgown.cyclic.app/api/students')
       .then(response => response.json())
       .then(data => {
         console.log(data)
@@ -34,6 +34,11 @@ function Dashboard() {
                   <td>{studentName}</td>
                   <td>{studentId}</td>
                   <td>{item.classes.join(", ")}</td>
+                  <td>
+                    <button onClick={() => console.log("edit", this)}>Edit</button>
+                    <button onClick={() => console.log("delete", this)}>Delete</button>
+                  </td>
+
                 </tr>
               )
             })}

@@ -49,8 +49,9 @@ function Dashboard() {
     newData.splice(index, 1);
     setData(newData);
     // delete the student from the server
-    fetch(`https://vivacious-jade-nightgown.cyclic.app/api/students/${studentId}`, {
-      method: 'DELETE'
+    fetch(`https://vivacious-jade-nightgown.cyclic.app/api/students`, {
+      method: 'DELETE',
+      body: JSON.stringify({ studentId })
     })
       .then(response => response.json())
       .then(data => console.log(data))

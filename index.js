@@ -127,6 +127,17 @@ app.post('/api/students', async (req, res) => {
   }
 });
 
+app.delete('/api/students', async (req, res) => {
+  const { studentId } = req.body;
+  console.log(studentId);
+  try {
+    await Student.findOneAndDelete({ studentId });
+    res.json({status:"Success", message:'Student deleted'});
+  } catch {
+    res.json({status:"Faliure",message:'Student not deleted'});
+  }
+});
+
 
 app.get('/admin', async (req, res) => {
   res.sendFile(join(__dirname, 'buildAdmin', 'adminHome.html'));

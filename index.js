@@ -116,12 +116,12 @@ app.get('/api/students', async (req, res) => {
   }
 });
 
-app.get('/admin', (req, res) => {
+app.get('/admin', async (req, res) => {
   res.sendFile(join(__dirname, 'buildAdmin', 'adminHome.html'));
 });
 
 //default homepage
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
   res.json({message: "Welcome to the student login API"});
 });
 

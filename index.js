@@ -117,7 +117,7 @@ app.get('/api/students', async (req, res) => {
 });
 
 app.get('/admin', (req, res) => {
-  res.sendFile(join(__dirname, 'buildAdmin', 'index.html'));
+  res.sendFile(join(__dirname, 'buildAdmin', 'adminHome.html'));
 });
 
 //default homepage

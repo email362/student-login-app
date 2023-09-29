@@ -20,9 +20,12 @@ const AddStudentForm = ({ onSubmit, onCancel }) => {
   };
 
   const handleSubmit = (event) => {
+    console.log('submitting');
     event.preventDefault();
+    console.log(event.target.name.value);
+    console.log(event.target.studentId.value);
     onSubmit({
-      name: event.target.name.value,
+      studentName: event.target.name.value,
       studentId: event.target.studentId.value,
       classes: classes.filter((c) => c !== ''),
     });

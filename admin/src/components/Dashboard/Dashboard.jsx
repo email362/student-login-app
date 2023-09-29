@@ -67,13 +67,13 @@ function Dashboard() {
     setShowAddStudentForm(true);
   }
 
-  const handleAddStudentSubmit = (event) => {
-    event.preventDefault();
-    const form = event.target;
-    const studentName = form.elements['name'].value;
-    const studentId = form.elements['studentId'].value;
-    const classes = form.elements['classes'].value.split(',');
-    const newStudent = { studentName, studentId, classes };
+  const handleAddStudentSubmit = (newStudent) => {
+    // const form = event.target;
+    // console.log(form);
+    // const studentName = form.elements['name'].value;
+    // const studentId = form.elements['studentId'].value;
+    // const classes = form.elements['classes'].value.split(',');
+    // const newStudent = { studentName, studentId, classes };
     fetch('https://vivacious-jade-nightgown.cyclic.app/api/students', {
       method: 'POST',
       headers: {
@@ -82,12 +82,16 @@ function Dashboard() {
       body: JSON.stringify(newStudent)
     })
       .then(response => response.json())
-      .then(data => {
-        console.log(data);
-        setData([...data]);
+      .then(res => {
+        if(res.status === "Success") {
+          setData([...data, res.student]);
+        }
         setShowAddStudentForm(false);
       })
-      .catch(error => console.log(error))
+      .catch(error => {
+        console.log(error)
+        setShowAddStudentForm(false);
+      })
   }
 
   const handleCancelAddStudent = () => {

@@ -120,10 +120,10 @@ app.post('/api/students', async (req, res) => {
   const { studentName, studentId, classes } = req.body;
   console.log(studentName, studentId, classes);
   try {
-    await Student.create({ studentName, studentId, classes });
-    res.json({message:'Student created'});
+    const student = await Student.create({ studentName, studentId, classes });
+    res.json({status:"Success", student});
   } catch {
-    res.json({message:'Student not created'});
+    res.json({status:"Faliure",message:'Student not created'});
   }
 });
 

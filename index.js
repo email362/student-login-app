@@ -127,13 +127,12 @@ app.post('/api/students', async (req, res) => {
   }
 });
 
-app.delete('/api/students', async (req, res) => {
-  const { studentId } = req.body;
+app.delete('/api/students/:studentId', async (req, res) => {
+  const { studentId } = req.params;
   console.log(studentId);
   try {
     const deleted = await Student.findOneAndDelete({ studentId });
-    console.log("deleted",deleted);
-    res.json({status:"Success", message:'Student deleted'});
+    res.json({status:"Success", message:'Student deleted', deleted});
   } catch {
     res.json({status:"Faliure",message:'Student not deleted'});
   }

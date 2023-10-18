@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react'
 import './Dashboard.css'
 import EditStudentForm from '../EditStudentForm/EditStudentForm';
 import AddStudentForm from '../AddStudentForm/AddStudentForm';
+import TimeLogForm from '../TimeLogForm/TimeLogForm';
 
 function Dashboard() {
 
   const [data, setData] = useState([]);
   const [showAddStudentForm, setShowAddStudentForm] = useState(false);
   const [showEditStudentForm, setShowEditStudentForm] = useState(false);
+  const [showTimeLogForm, setShowTimeLogForm] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
 
   useEffect(() => {
@@ -22,7 +24,12 @@ function Dashboard() {
   const handleEdit = (index) => {
     setSelectedStudent(data[index]);
     setShowEditStudentForm(true);
-  }
+  };
+
+  const handleTimeLog = (index) => {
+    setSelectedStudent(data[index]);
+    setShowTimeLogForm(true);
+  };
 
   const handleSave = (updatedStudent) => {
     const newData = [...data];
@@ -41,7 +48,9 @@ function Dashboard() {
       .then(data => console.log(data))
       .catch(error => console.log(error))
     setShowEditStudentForm(false);
-  }
+    setShowTimeLogForm(false);
+    
+  };
 
   const handleDelete = (index) => {
     const newData = [...data];
@@ -55,17 +64,17 @@ function Dashboard() {
       .then(response => response.json())
       .then(data => console.log(data))
       .catch(error => console.log(error))
-  }
+  };
 
   const handleInputChange = (event, index) => {
     const newData = [...data];
     newData[index].classes = event.target.value.split(",");
     setData(newData);
-  }
+  };
 
   const handleAddStudent = () => {
     setShowAddStudentForm(true);
-  }
+  };
 
   const handleAddStudentSubmit = (newStudent) => {
     // const form = event.target;
@@ -92,41 +101,48 @@ function Dashboard() {
         console.log(error)
         setShowAddStudentForm(false);
       })
-  }
+  };
 
   const handleCancelAddStudent = () => {
     setShowAddStudentForm(false);
-  }
+  };
 
   return (
-    <>
-      <h1>MLC Admin Home</h1>
-      {(!showAddStudentForm && !showEditStudentForm) && (
-        <div>
+    <div>
+      <h1 className='title'>MLC Admin Home</h1>
+      {(!showAddStudentForm && !showEditStudentForm && !showTimeLogForm) && (
+        <div className='container'>
           <button onClick={handleAddStudent}>Add Student</button>
-          <table>
-            <thead>
+          <table className='students-table'>
+            <thead className='students-head'>
               <tr>
                 <th>Name</th>
                 <th>Student ID</th>
                 <th>Classes</th>
+                <th>Total Time Logged</th>
+                <th>Time Log</th>
                 <th>Actions</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className='students-body'>
               {data.map((item, index) => {
-                const {studentName, studentId, classes, isEditable} = item;
+                const isEditable = false;
+                const {studentName, studentId, classes, loginTimestamps} = item;
 
                 return (
-                  <tr key={studentId}>
-                    <td>{studentName}</td>
-                    <td>{studentId}</td>
-                    <td>
+                  <tr className='student-row' key={studentId}>
+                    <td className='student-name'>{studentName}</td>
+                    <td className='student-id'>{studentId}</td>
+                    <td className='classes'>
                       {isEditable ? (
                         <input type="text" value={classes.join(",")} onChange={(event) => handleInputChange(event, index)} />
                       ) : (
                         classes.join(", ")
                       )}
+                    </td>
+                    <td className='total-time-logged'>{loginTimestamps.reduce((acc,curr) => curr.totalTime + acc,0)}</td>
+                    <td className='time-log'>
+                      <button onClick={() => handleTimeLog(index)}>Time Log</button>
                     </td>
                     <td>
                       <button onClick={() => handleEdit(index)}>Edit</button>
@@ -146,8 +162,11 @@ function Dashboard() {
       {showEditStudentForm && (
         <EditStudentForm student={selectedStudent} onSave={handleSave} onCancel={() => setShowEditStudentForm(false)} />
       )}
-    </>
+      {showTimeLogForm && (
+        <TimeLogForm student={selectedStudent} onSave={handleSave}  onCancel={() => setShowTimeLogForm(false)} />
+      )}
+    </div>
   )
 }
 
-export default Dashboard
+export default Dashboard;

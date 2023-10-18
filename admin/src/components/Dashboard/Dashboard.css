@@ -5,19 +5,6 @@
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);
@@ -33,10 +20,124 @@
   }
 }
 
-.card {
-  padding: 2em;
+/* Global styles */
+body {
+  font-family: Arial, sans-serif;
 }
 
-.read-the-docs {
-  color: #888;
+/* Dashboard title */
+.title {
+  text-align: center;
+  font-size: 24px;
+  margin: 20px 0;
+}
+
+/* Container for the student data */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #fff;
+}
+
+/* Button to add a student */
+button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+/* Student table */
+.students-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Table header */
+.students-head {
+  background-color: #f0f0f0;
+}
+
+.students-head th {
+  padding: 10px;
+  text-align: left;
+}
+
+/* Table body */
+.students-body {
+  border-top: 1px solid #ddd;
+}
+
+.student-row {
+  transition: background-color 0.2s ease;
+}
+
+.student-row:hover {
+  background-color: #f5f5f5;
+}
+
+.student-name,
+.student-id,
+.actions,
+.timestamps {
+  padding: 10px;
+}
+
+/* Editable input field */
+input[type="text"] {
+  width: 100%;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+/* Buttons in the Actions column */
+td > button {
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  margin-right: 5px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+td > button:hover {
+  background-color: #c82333;
+}
+
+/* Student table row styles */
+.students-body tr:nth-child(even) {
+  background-color: #f5f5f5; /* Even rows will have a light gray background */
+}
+
+.students-body tr:nth-child(odd) {
+  background-color: #fff; /* Odd rows will have a white background */
+}
+
+/* Table row for timestamps */
+.timestamps {
+  padding: 10px;
+  /* white-space: nowrap; Prevent line wrapping */
+  overflow: hidden; /* Hide overflowing content */
+  text-overflow: ellipsis; /* Display ellipsis (...) for long content */
+  max-width: 400px;
+  height: 100px;
+}
+
+/* Container for timestamps content */
+.timestamps-container {
+  max-height: 100px; /* Set a maximum height for the container */
+  overflow: auto; /* Add scrollbars if content overflows */
+  /* white-space: nowrap; Prevent line wrapping */
 }

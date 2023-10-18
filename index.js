@@ -140,10 +140,10 @@ app.delete('/api/students/:studentId', async (req, res) => {
 
 app.put('/api/students/:studentId', async (req, res) => {
   const { studentId } = req.params;
-  const { studentName, classes } = req.body;
+  const { studentName, classes, lastLogin, lastLogout, lastClass, loginTimestamps } = req.body;
   console.log(studentId, studentName, classes);
   try {
-    const updated = await Student.findOneAndUpdate({ studentId }, { studentName, classes }, { new: true });
+    const updated = await Student.findOneAndUpdate({ studentId }, { studentName, classes, lastLogin, lastLogout, lastClass, loginTimestamps }, { new: true });
     res.json({status:"Success", message:'Student updated', updated});
   } catch {
     res.json({status:"Faliure",message:'Student not updated'});

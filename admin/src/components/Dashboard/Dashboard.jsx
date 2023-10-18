@@ -108,11 +108,12 @@ function Dashboard() {
   };
 
   return (
-    <div>
+    <div className='admin-panel'>
       <h1 className='title'>MLC Admin Home</h1>
       {(!showAddStudentForm && !showEditStudentForm && !showTimeLogForm) && (
-        <div className='container'>
-          <button onClick={handleAddStudent}>Add Student</button>
+        // <div className='container'>
+        <>
+          <button className='btn-view-log' onClick={handleAddStudent}>Add Student</button>
           <table className='students-table'>
             <thead className='students-head'>
               <tr>
@@ -142,11 +143,11 @@ function Dashboard() {
                     </td>
                     <td className='total-time-logged'>{loginTimestamps.reduce((acc,curr) => curr.totalTime + acc,0)}</td>
                     <td className='time-log'>
-                      <button onClick={() => handleTimeLog(index)}>Time Log</button>
+                      <button className='btn-view-log' onClick={() => handleTimeLog(index)}>Time Log</button>
                     </td>
                     <td>
-                      <button onClick={() => handleEdit(index)}>Edit</button>
-                      <button onClick={() => handleDelete(index)}>Delete</button>
+                      <button className='btn-edit' onClick={() => handleEdit(index)}>Edit</button>
+                      <button className='btn-delete' onClick={() => handleDelete(index)}>Delete</button>
                     </td>
                   </tr>
                 )
@@ -154,7 +155,7 @@ function Dashboard() {
             </tbody>
 
           </table>
-        </div>
+        </>
       )}
       {showAddStudentForm && ( 
         <AddStudentForm onSubmit={handleAddStudentSubmit} onCancel={handleCancelAddStudent} /> 

@@ -1,4 +1,4 @@
-#root {
+/* #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
@@ -20,30 +20,30 @@
   }
 }
 
-/* Global styles */
+/* Global styles
 body {
   font-family: Arial, sans-serif;
-}
+} */
 
 /* Dashboard title */
-.title {
+/* .title {
   text-align: center;
   font-size: 24px;
   margin: 20px 0;
-}
+} */
 
 /* Container for the student data */
-.container {
+/* .container {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
   border: 1px solid #ddd;
   border-radius: 5px;
   background-color: #fff;
-}
+} */
 
 /* Button to add a student */
-button {
+/* button {
   background-color: #007bff;
   color: #fff;
   border: none;
@@ -51,40 +51,40 @@ button {
   margin-bottom: 10px;
   cursor: pointer;
   border-radius: 5px;
-}
+} */
 
-button:hover {
+/* button:hover {
   background-color: #0056b3;
-}
+} */
 
 /* Student table */
-.students-table {
+/* .students-table {
   width: 100%;
   border-collapse: collapse;
-}
+} */
 
 /* Table header */
-.students-head {
+/* .students-head {
   background-color: #f0f0f0;
-}
+} */
 
-.students-head th {
+/* .students-head th {
   padding: 10px;
   text-align: left;
-}
+} */
 
 /* Table body */
-.students-body {
+/* .students-body {
   border-top: 1px solid #ddd;
-}
+} */
 
-.student-row {
+/* .student-row {
   transition: background-color 0.2s ease;
-}
+} */
 
-.student-row:hover {
+/* .student-row:hover {
   background-color: #f5f5f5;
-}
+} */
 
 .student-name,
 .student-id,
@@ -102,7 +102,7 @@ input[type="text"] {
 }
 
 /* Buttons in the Actions column */
-td > button {
+/* td > button {
   background-color: #dc3545;
   color: #fff;
   border: none;
@@ -110,11 +110,11 @@ td > button {
   margin-right: 5px;
   cursor: pointer;
   border-radius: 3px;
-}
+} */
 
-td > button:hover {
+/* td > button:hover {
   background-color: #c82333;
-}
+} */
 
 /* Student table row styles */
 .students-body tr:nth-child(even) {
@@ -125,19 +125,82 @@ td > button:hover {
   background-color: #fff; /* Odd rows will have a white background */
 }
 
-/* Table row for timestamps */
-.timestamps {
-  padding: 10px;
-  /* white-space: nowrap; Prevent line wrapping */
-  overflow: hidden; /* Hide overflowing content */
-  text-overflow: ellipsis; /* Display ellipsis (...) for long content */
-  max-width: 400px;
-  height: 100px;
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f5f5f5;
+  padding: 20px;
+  margin: 0;
 }
 
-/* Container for timestamps content */
-.timestamps-container {
-  max-height: 100px; /* Set a maximum height for the container */
-  overflow: auto; /* Add scrollbars if content overflows */
-  /* white-space: nowrap; Prevent line wrapping */
+.admin-panel {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  overflow-x: auto;  /* Allows horizontal scrolling */
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;  /* Sets a minimum width for the table */
+}
+
+th, td {
+  padding: 10px 15px;
+  text-align: left;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+th {
+  background-color: #f7f7f7;
+}
+
+.btn-view-log, .btn-edit, .btn-delete {
+  padding: 5px 10px;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  margin-right: 5px;
+  font-size: 0.8em;  /* Smaller text on buttons for better fit */
+}
+
+.btn-view-log {
+  background-color: #007BFF;
+  color: white;
+}
+
+.btn-view-log:hover {
+  background-color: #0069D9;
+}
+
+.btn-edit {
+  background-color: #FFC107;
+  color: white;
+}
+
+.btn-edit:hover {
+  background-color: #E0A800;
+}
+
+.btn-delete {
+  background-color: #DC3545;
+  color: white;
+}
+
+.btn-delete:hover {
+  background-color: #BD2130;
+}
+
+/* Media Query for smaller screens */
+@media (max-width: 768px) {
+  body {
+      padding: 10px;
+  }
+  .admin-panel {
+      padding: 10px;
+  }
+  th, td {
+      padding: 5px 10px;
+  }
 }

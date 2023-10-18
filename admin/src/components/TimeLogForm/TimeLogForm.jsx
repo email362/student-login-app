@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import './TimeLogForm.css';
-import { set } from 'mongoose';
 
 function TimeLogForm({ student, onSave, onCancel }) {
     const [timeStamps, setTimeStamps] = useState(student.loginTimestamps);
@@ -32,12 +31,7 @@ function TimeLogForm({ student, onSave, onCancel }) {
     //     setHours(newHours);
     // };
 
-    // const handleAddTimeLog = () => {
-    //     setDate([...date, '']);
-    //     setTimeIn([...timeIn, '']);
-    //     setTimeOut([...timeOut, '']);
-    //     setHours([...hours, '']);
-    // };
+
 
     // const handleRemoveTimeLog = (index) => {
     //     const newDate = [...date];
@@ -60,6 +54,13 @@ function TimeLogForm({ student, onSave, onCancel }) {
     //     onSave(updatedStudent);
     // };
 
+    const handleRemoveTimeLog = (index) => {
+        const newTimeStamps = [...timeStamps];
+        newTimeStamps.splice(index, 1);
+        setTimeStamps(newTimeStamps);
+        console.log(newTimeStamps);
+    };
+
     const handleClassChange = (event) => {
         const updatedClass = event.target.value;
         
@@ -75,7 +76,7 @@ function TimeLogForm({ student, onSave, onCancel }) {
             const loginTime = Number(doc.querySelector('input.login-time-value').value);
             const logoutTime = Number(doc.querySelector('input.logout-time-value').value);
             const totalTime = Number(doc.querySelector('input.total-time-value').value);
-            updatedTimeStamps.push({ _id: id, className, loginTime, logoutTime, totalTime });
+            updatedTimeStamps.push({ className, loginTime, logoutTime, totalTime });
         });
         setTimeStamps(updatedTimeStamps);
         const updatedStudent = { ...student, loginTimestamps: updatedTimeStamps };
@@ -87,34 +88,37 @@ function TimeLogForm({ student, onSave, onCancel }) {
         <div>
             <h2>Time Log</h2>
             <h4>{student.studentName}</h4>
+
             <form onSubmit={handleSubmit}>
-                {student.loginTimestamps.map((timeLog, index) => (
-                    <div key={timeLog._id} data-id={timeLog._id}>
+                {timeStamps.map((timeLog, index) => (
+                    <div key={timeLog._id || Date.now() + "" + student.studentId} data-id={timeLog._id || Date.now() + "" + student.studentId} className='timelog-entry'>
                         <label>
                             Class:
-                            <select className="class-value" defaultValue={timeLog.className}>
-                                {student.classes.map((classItem, index) => (
+                            <select className="class-value" defaultValue={JSON.stringify(timeLog.className)}>
+                                {student.classes.length > 0 && (student.classes.map((classItem, index) => (
                                     <option key={index} value={classItem}>
                                         {classItem}
                                     </option>
-                                ))}
-
+                                )))}
+                                {student.classes.length === 0 && (<option value={timeLog.className}>{timeLog.className}</option>)}
                             </select>
                         </label>
                         <label>
                             Login:
-                            <input type="text" className="login-time-value" value={timeLog.loginTime} onChange={(event) => handleClassChange(index, event.target.value)} />
+                            <input type="number" className="login-time-value" defaultValue={timeLog.loginTime} />
                         </label>
                         <label>
                             Logout:
-                            <input type="text" className="logout-time-value" value={timeLog.logoutTime} onChange={(event) => handleClassChange(index, event.target.value)} />
+                            <input type="number" className="logout-time-value" defaultValue={timeLog.logoutTime} />
                         </label>
                         <label>
                             Total Time:
-                            <input type="text" className="total-time-value" value={timeLog.totalTime} onChange={(event) => handleClassChange(index, event.target.value)} />
+                            <input type="number" className="total-time-value" defaultValue={timeLog.totalTime} />
                         </label>
+                        <button type="button" onClick={() => handleRemoveTimeLog(index)}>Delete</button>
                     </div>
                 ))}
+                <button type="button" onClick={() => setTimeStamps([...timeStamps, { className: '', loginTime: 0, logoutTime: 0, totalTime: 0 }])}>Add Time Log</button>
                 <button type="submit">Save</button>
                 <button type="button" onClick={onCancel}>Cancel</button>    
             </form>

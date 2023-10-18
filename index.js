@@ -145,8 +145,9 @@ app.put('/api/students/:studentId', async (req, res) => {
   try {
     const updated = await Student.findOneAndUpdate({ studentId }, { studentName, classes, lastLogin, lastLogout, lastClass, loginTimestamps }, { new: true });
     res.json({status:"Success", message:'Student updated', updated});
-  } catch {
-    res.json({status:"Faliure",message:'Student not updated'});
+  } catch(e) {
+    console.log("error",e.message);
+    res.json({status:"Failure",message:'Student not updated'});
   }
 });
 

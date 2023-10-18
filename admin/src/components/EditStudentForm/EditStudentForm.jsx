@@ -23,7 +23,8 @@ function EditStudentForm({ student, onSave, onCancel }) {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        const updatedStudent = { ...student, studentName: name, studentId, classes };
+        const removeEmptyClasses = classes.filter((cls) => cls !== '');
+        const updatedStudent = { ...student, studentName: name, studentId, classes: removeEmptyClasses };
         onSave(updatedStudent);
     };
 

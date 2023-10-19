@@ -94,7 +94,7 @@ function TimeLogForm({ student, onSave, onCancel }) {
                     <div key={timeLog._id || Date.now() + "" + student.studentId} data-id={timeLog._id || Date.now() + "" + student.studentId} className='timelog-entry'>
                         <label>
                             Class:
-                            <select className="class-value" defaultValue={JSON.stringify(timeLog.className)}>
+                            <select className="class-value" defaultValue={timeLog.className}>
                                 {student.classes.length > 0 && (student.classes.map((classItem, index) => (
                                     <option key={index} value={classItem}>
                                         {classItem}

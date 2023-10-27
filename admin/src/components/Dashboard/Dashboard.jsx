@@ -120,7 +120,7 @@ function Dashboard() {
                 <th>Name</th>
                 <th>Student ID</th>
                 <th>Classes</th>
-                <th>Total Time Logged</th>
+                <th>Total Time Logged (hours)</th>
                 <th>Time Log</th>
                 <th>Actions</th>
               </tr>
@@ -141,7 +141,7 @@ function Dashboard() {
                         classes.join(", ")
                       )}
                     </td>
-                    <td className='total-time-logged'>{loginTimestamps.reduce((acc,curr) => curr.totalTime + acc,0)}</td>
+                    <td className='total-time-logged'>{((loginTimestamps.reduce((acc,curr) => curr.totalTime + acc,0)/3600)).toFixed(2)}</td>
                     <td className='time-log'>
                       <button className='btn-view-log' onClick={() => handleTimeLog(index)}>Time Log</button>
                     </td>

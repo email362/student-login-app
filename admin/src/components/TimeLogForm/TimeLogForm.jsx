@@ -1,6 +1,51 @@
 import React, { useState } from 'react';
 import './TimeLogForm.css';
 
+function convertToInputDate(date) {
+    const dateObj = new Date(date);
+    const year = dateObj.getFullYear();
+    const month = dateObj.getMonth() + 1;
+    const day = dateObj.getDate();
+    return `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
+}
+
+function convertToInputTime(date) {
+    const dateObj = new Date(date);
+    const hours = dateObj.getHours();
+    const minutes = dateObj.getMinutes();
+    const seconds = dateObj.getSeconds();
+    return `${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+}
+
+function secondsToHoursMinutesSeconds(seconds) {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds - (hours * 3600)) / 60);
+    const secondsLeft = seconds - (hours * 3600) - (minutes * 60);
+    return `${hours}:${minutes}:${secondsLeft}`;
+}
+
+function hoursMinutesSecondsToSeconds(hours, minutes, seconds) {
+    return (hours * 3600) + (minutes * 60) + seconds;
+}
+
+function parseHoursMinutesSeconds(hoursMinutesSeconds) {
+    const [hours, minutes, seconds] = hoursMinutesSeconds.split(':');
+    return { hours, minutes, seconds };
+}
+
+function createDateTime(date, time) {
+    const [year, month, day] = date.split('-');
+    const [hours, minutes, seconds] = time.split(':');
+    return new Date(year, month - 1, day, hours, minutes, seconds);
+}
+
+function getTotalTime(loginTime, logoutTime) { 
+    const loginDateTime = createDateTime(loginTime.date, loginTime.time);
+    const logoutDateTime = createDateTime(logoutTime.date, logoutTime.time);
+    const totalTime = logoutDateTime - loginDateTime;
+    return totalTime;
+}
+
 function TimeLogForm({ student, onSave, onCancel }) {
     const [timeStamps, setTimeStamps] = useState(student.loginTimestamps);
     // const [timeIn, setTimeIn] = useState(student.timeIn);
@@ -105,15 +150,17 @@ function TimeLogForm({ student, onSave, onCancel }) {
                         </label>
                         <label>
                             Login:
-                            <input type="number" className="login-time-value" defaultValue={timeLog.loginTime} />
+                            <input type='date' className="login-date-value" defaultValue={convertToInputDate(timeLog.loginTime)} />
+                            <input type='time' className="login-time-value" defaultValue={convertToInputTime(timeLog.loginTime)} />
                         </label>
                         <label>
                             Logout:
-                            <input type="number" className="logout-time-value" defaultValue={timeLog.logoutTime} />
+                            <input type='date' className="logout-date-value" defaultValue={convertToInputDate(timeLog.logoutTime)} />
+                            <input type='time' className="logout-date-value" defaultValue={convertToInputTime(timeLog.logoutTime)} />
                         </label>
                         <label>
                             Total Time:
-                            <input type="number" className="total-time-value" defaultValue={timeLog.totalTime} />
+                            <input type="text" readOnly className="total-time-value" defaultValue={timeLog.totalTime} />
                         </label>
                         <button type="button" onClick={() => handleRemoveTimeLog(index)}>Delete</button>
                     </div>

@@ -198,7 +198,7 @@ function TimeLogForm({ student, onSave, onCancel }) {
                                         {classItem}
                                     </option>
                                 )))}
-                                {student.classes.length === 0 && (<option value={timeLog.className}>{timeLog.className}</option>)}
+                                {!student.classes.includes(timeLog.className) && (<option value={timeLog.className}>{timeLog.className}</option>)}
                             </select>
                         </label>
                         <label>
@@ -220,7 +220,7 @@ function TimeLogForm({ student, onSave, onCancel }) {
                 ))}
                 <button type="button" onClick={() => setTimeStamps([...timeStamps, { className: '', loginTime: 0, logoutTime: 0, totalTime: 0 }])}>Add Time Log</button>
                 <button type="submit">Save</button>
-                <button type="button" onClick={onCancel}>Cancel</button>    
+                <button type="button" onClick={onCancel}>Cancel</button>
             </form>
         </div>
     );

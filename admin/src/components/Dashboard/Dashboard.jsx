@@ -3,6 +3,9 @@ import './Dashboard.css'
 import EditStudentForm from '../EditStudentForm/EditStudentForm';
 import AddStudentForm from '../AddStudentForm/AddStudentForm';
 import TimeLogForm from '../TimeLogForm/TimeLogForm';
+import { Table, Button, Title, Box, Modal, Group, Text, MantineProvider, Container } from '@mantine/core';
+import { modals, ModalsProvider } from '@mantine/modals';
+
 
 function Dashboard() {
 
@@ -107,66 +110,118 @@ function Dashboard() {
     setShowAddStudentForm(false);
   };
 
+  const openDeleteModal = (index) => 
+    modals.openConfirmModal({
+      title: 'Delete Student',
+      centered: true,
+      children: (
+        <Text size="sm">
+          Are you sure you want to delete this student?
+        </Text>
+      ),
+      labels: { cancel: 'Cancel', confirm: 'Delete' },
+      confirmProps: { color: 'red' },
+      onCancel: () => console.log('canceled'),
+      onConfirm: () => handleDelete(index),
+    });
+
+  // const openDeleteModal = () =>
+  //   modals.openConfirmModal({
+  //     title: 'Delete your profile',
+  //     centered: true,
+  //     labels: { confirm: 'Delete account', cancel: "No don't delete it" },
+  //     confirmProps: { color: 'red' },
+  //     onCancel: () => console.log('Cancel'),
+  //     onConfirm: () => console.log('Confirmed'),
+  //   });
+
   return (
-    <div className='admin-panel'>
-      <h1 className='title'>MLC Admin Home</h1>
-      {(!showAddStudentForm && !showEditStudentForm && !showTimeLogForm) && (
-        // <div className='container'>
-        <>
-          <button className='btn-view-log' onClick={handleAddStudent}>Add Student</button>
-          <table className='students-table'>
-            <thead className='students-head'>
-              <tr>
-                <th>Name</th>
-                <th>Student ID</th>
-                <th>Classes</th>
-                <th>Total Time Logged (hours)</th>
-                <th>Time Log</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody className='students-body'>
-              {data.map((item, index) => {
-                const isEditable = false;
-                const {studentName, studentId, classes, loginTimestamps} = item;
-
-                return (
-                  <tr className='student-row' key={studentId}>
-                    <td className='student-name'>{studentName}</td>
-                    <td className='student-id'>{studentId}</td>
-                    <td className='classes'>
-                      {isEditable ? (
-                        <input type="text" value={classes.join(",")} onChange={(event) => handleInputChange(event, index)} />
-                      ) : (
-                        classes.join(", ")
-                      )}
-                    </td>
-                    <td className='total-time-logged'>{((loginTimestamps.reduce((acc,curr) => curr.totalTime + acc,0)/3600)).toFixed(2)}</td>
-                    <td className='time-log'>
-                      <button className='btn-view-log' onClick={() => handleTimeLog(index)}>Time Log</button>
-                    </td>
-                    <td>
-                      <button className='btn-edit' onClick={() => handleEdit(index)}>Edit</button>
-                      <button className='btn-delete' onClick={() => handleDelete(index)}>Delete</button>
-                    </td>
+    <Container size='xl'>
+      <ModalsProvider>
+        <Box sx={{ padding: '20px' }}>
+          <Title order={1}>MLC Admin Home</Title>
+          {!showAddStudentForm && !showEditStudentForm && !showTimeLogForm && (
+            <Box>
+              <Button onClick={handleAddStudent} className='btn-view-log'>Add Student</Button>
+              <Table striped>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Student ID</th>
+                    <th>Classes</th>
+                    <th>Total Time Logged (hours)</th>
+                    {/* <th>Time Log</th> */}
+                    <th>Actions</th>
                   </tr>
-                )
-              })}
-            </tbody>
+                </thead>
+                <tbody className='students-body'>
+                  {data.map((item, index) => {
+                    const { studentName, studentId, classes, loginTimestamps } = item;
+                    return (
+                      <tr key={studentId}>
+                        <td>{studentName}</td>
+                        <td>{studentId}</td>
+                        <td>{classes.join(", ")}</td>
+                        <td>{((loginTimestamps.reduce((acc, curr) => curr.totalTime + acc, 0) / 3600)).toFixed(2)}</td>
+                        {/* <td>
+                        </td> */}
+                        <td>
+                          <Group>
+                            <Button onClick={() => handleTimeLog(index)} className='btn-view-log'>Time Log</Button>
+                            <Button onClick={() => handleEdit(index)} className='btn-edit'>Edit</Button>
+                            {/* <Button onClick={() => handleDelete(index)}>Delete</Button> */}
+                            <Button onClick={() => openDeleteModal(index)} className='btn-delete'>Delete</Button>
+                          </Group>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </Table>
+            </Box>
+          )}
+          {showTimeLogForm && (<TimeLogForm student={selectedStudent} onSave={handleSave} onCancel={() => setShowTimeLogForm(false)} />)}
+          {showEditStudentForm && (<EditStudentForm student={selectedStudent} onSave={handleSave} onCancel={() => setShowEditStudentForm(false)} />)}
+          {showAddStudentForm && (<AddStudentForm onSubmit={handleAddStudentSubmit} onCancel={handleCancelAddStudent} />)}
 
-          </table>
-        </>
-      )}
-      {showAddStudentForm && ( 
-        <AddStudentForm onSubmit={handleAddStudentSubmit} onCancel={handleCancelAddStudent} /> 
-      )}
-      {showEditStudentForm && (
-        <EditStudentForm student={selectedStudent} onSave={handleSave} onCancel={() => setShowEditStudentForm(false)} />
-      )}
-      {showTimeLogForm && (
-        <TimeLogForm student={selectedStudent} onSave={handleSave}  onCancel={() => setShowTimeLogForm(false)} />
-      )}
-    </div>
+        {/*
+          <Modal
+          opened={showAddStudentForm}
+          onClose={() => setShowAddStudentForm(false)}
+          title="Add Student"
+          centered
+          size='auto'
+          >
+          <AddStudentForm onSubmit={handleAddStudentSubmit} onCancel={handleCancelAddStudent} />
+          </Modal>
+        */}
+
+        {/*
+          <Modal
+            opened={showEditStudentForm}
+            onClose={() => setShowEditStudentForm(false)}
+            title="Edit Student"
+            centered
+            size='auto'
+          >
+            <EditStudentForm student={selectedStudent} onSave={handleSave} onCancel={() => setShowEditStudentForm(false)} />
+          </Modal>
+        */}
+
+        {/*
+          <Modal
+            opened={showTimeLogForm}
+            onClose={() => setShowTimeLogForm(false)}
+            title="Time Log"
+            centered
+            size='auto'
+          >
+            <TimeLogForm student={selectedStudent} onSave={handleSave} onCancel={() => setShowTimeLogForm(false)} />
+          </Modal>
+        */}
+        </Box>
+      </ModalsProvider>
+      </Container>
   )
 }
 

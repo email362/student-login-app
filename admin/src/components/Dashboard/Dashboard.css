@@ -86,20 +86,24 @@ body {
   background-color: #f5f5f5;
 } */
 
+/*
 .student-name,
 .student-id,
 .actions,
 .timestamps {
   padding: 10px;
 }
+*/
 
 /* Editable input field */
+/*
 input[type="text"] {
   width: 100%;
   padding: 5px;
   border: 1px solid #ccc;
   border-radius: 3px;
 }
+*/
 
 /* Buttons in the Actions column */
 /* td > button {
@@ -117,34 +121,23 @@ input[type="text"] {
 } */
 
 /* Student table row styles */
-.students-body tr:nth-child(even) {
-  background-color: #f5f5f5; /* Even rows will have a light gray background */
+
+
+/* .students-body tr:nth-child(even) {
+  background-color: #f5f5f5;
 }
+
 
 .students-body tr:nth-child(odd) {
-  background-color: #fff; /* Odd rows will have a white background */
-}
+  background-color: #fff;
+} */
 
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f5f5f5;
-  padding: 20px;
-  margin: 0;
-}
-
-.admin-panel {
-  background-color: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  overflow-x: auto;  /* Allows horizontal scrolling */
-}
-
-table {
+/* table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 600px;  /* Sets a minimum width for the table */
-}
+  min-width: 600px;
+} */
+
 
 th, td {
   padding: 10px 15px;
@@ -152,22 +145,25 @@ th, td {
   border-bottom: 1px solid #e5e5e5;
 }
 
+/*
 th {
   background-color: #f7f7f7;
-}
+} */
 
+
+// multiple line comments
 .btn-view-log, .btn-edit, .btn-delete {
   padding: 5px 10px;
   cursor: pointer;
   border: none;
   border-radius: 5px;
   margin-right: 5px;
-  font-size: 0.8em;  /* Smaller text on buttons for better fit */
+  font-size: 0.8em;
 }
 
 .btn-view-log {
   background-color: #007BFF;
-  color: white;
+  /* color: white; */
 }
 
 .btn-view-log:hover {
@@ -176,7 +172,7 @@ th {
 
 .btn-edit {
   background-color: #FFC107;
-  color: white;
+  /* color: white; */
 }
 
 .btn-edit:hover {
@@ -185,7 +181,7 @@ th {
 
 .btn-delete {
   background-color: #DC3545;
-  color: white;
+  /* color: white; */
 }
 
 .btn-delete:hover {

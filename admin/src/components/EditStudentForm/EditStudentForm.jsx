@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useState, Fragment } from 'react';
+import { TextInput, Button, Title, Box, Group, Stack, Paper, Card, Grid, Divider, ActionIcon } from '@mantine/core';
+import { IconTrash } from '@tabler/icons-react';
 
 function EditStudentForm({ student, onSave, onCancel }) {
     const [name, setName] = useState(student.studentName);
@@ -18,6 +20,7 @@ function EditStudentForm({ student, onSave, onCancel }) {
             }
             return classItem;
         });
+        console.log(newClasses);
         setClasses(newClasses);
     };
 
@@ -35,6 +38,7 @@ function EditStudentForm({ student, onSave, onCancel }) {
         event.preventDefault();
         const removeEmptyClasses = classes.filter((cls) => cls !== '');
         const updatedStudent = { ...student, studentName: name, studentId, classes: removeEmptyClasses };
+        console.log(updatedStudent);
         onSave(updatedStudent);
     };
 
@@ -43,54 +47,68 @@ function EditStudentForm({ student, onSave, onCancel }) {
     };
 
     return (
-        <div>
-            <h2>Edit Student</h2>
+        <Paper padding="md">
+            {/* <Title order={2}>Edit Student</Title> */}
             <form onSubmit={handleSubmit}>
-                <label>
-                    Name:
-                    <input type="text" value={name} onChange={(event) => setName(event.target.value)} />
-                </label>
-                <label>
-                    Student ID:
-                    <input type="text" value={studentId} onChange={(event) => setStudentId(event.target.value)} />
-                </label>
-                <label>
-                    Classes:
-                    {classes.map((classItem, index) => {
-                        const [className, classSection, professor] = splitClass(classItem);
-                        return (
-                            <div key={index} style={{display:"flex", alignItems: 'center', marginBottom: '10px'}}>
-                                <label>Class Name:</label>
-                                <input
-                                    type="text"
-                                    value={className}
-                                    onChange={(event) => handleClassChange(index, 0, event.target.value)}
-                                    style={{ marginRight: '5px' }}
-                                />
-                                <label>Class Section:</label>
-                                <input
-                                    type="text"
-                                    value={classSection}
-                                    onChange={(event) => handleClassChange(index, 1, event.target.value)}
-                                    style={{ marginRight: '5px' }}
-                                />
-                                <label>Professor:</label>
-                                <input
-                                    type="text"
-                                    value={professor}
-                                    onChange={(event) => handleClassChange(index, 2, event.target.value)}
-                                    style={{ marginRight: '5px' }}
-                                />
-                                <button type="button" onClick={() => handleRemoveClass(index)}>Remove</button>
-                            </div>
-                        );
-                    })}
-                    <button type="button" onClick={handleAddClass}>Add Class</button>
-                </label>
-                <button type="submit">Save</button>
-                <button type="button" onClick={onCancel}>Cancel</button>
+                <Stack spacing="md">
+                    <TextInput
+                        label="Name"
+                        value={name}
+                        onChange={(event) => setName(event.target.value)}
+                    />
+                    <TextInput
+                        label="Student ID"
+                        value={studentId}
+                        onChange={(event) => setStudentId(event.target.value)}
+                    />
+
+                    <Box>
+                        <Title order={4}>Classes</Title>
+                        {classes.map((classItem, index) => {
+                            const [className, classSection, professor] = splitClass(classItem);
+                            return (
+                                <Fragment key={index}>
+                                    <Card withBorder shadow="sm" p="md" mb="md">
+                                        <Grid>
+                                            <Grid.Col span={4}>
+                                                <TextInput
+                                                    label="Class Name"
+                                                    value={className}
+                                                    onChange={(event) => handleClassChange(index, 0, event.target.value)}
+                                                />
+                                            </Grid.Col>
+                                            <Grid.Col span={4}>
+                                                <TextInput
+                                                    label="Class Section"
+                                                    value={classSection}
+                                                    onChange={(event) => handleClassChange(index, 1, event.target.value)}
+                                                />
+                                            </Grid.Col>
+                                            <Grid.Col span={4}>
+                                                <TextInput
+                                                    label="Professor"
+                                                    value={professor}
+                                                    onChange={(event) => handleClassChange(index, 2, event.target.value)}
+                                                />
+                                            </Grid.Col>
+                                            <Grid.Col span={12} style={{alignItems:'end', display:'flex'}}>
+                                                <Button style={{alignSelf:'center'}} color="red" onClick={() => handleRemoveClass(index)}><IconTrash /></Button>
+                                            </Grid.Col>
+                                        </Grid>
+                                    </Card>
+                                    {index < classes.length - 1 && <Divider my="sm" />}
+                                </Fragment>
+                            );
+                        })}
+                        <Button type="button" onClick={handleAddClass}>Add Class</Button>
+                    </Box>
+                    <Group position="right" mt="md">
+                        <Button type="submit">Save</Button>
+                        <Button type="button" color="gray" onClick={onCancel}>Cancel</Button>
+                    </Group>
+                </Stack>
             </form>
-        </div>
+        </Paper>
     );
 }
 

@@ -1,4 +1,4 @@
-.timelog-row {
+/* .timelog-row {
     transition: background-color 0.2s ease;
     margin-top: 10px;
     margin-bottom: 10px;
@@ -41,7 +41,7 @@
     box-sizing: border-box;
 }
 
-button {
+#time-log-form button {
     padding: 10px 15px;
     margin-right: 10px;
     border: none;
@@ -50,17 +50,17 @@ button {
     transition: background-color 0.3s;
 }
 
-button[type="submit"] {
+#time-log-form button[type="submit"] {
     background-color: #4CAF50;
     color: white;
 }
 
-button[type="button"] {
+#time-log-form button[type="button"] {
     background-color: #f44336;
     color: white;
 }
 
-button:hover {
+#time-log-form button:hover {
     opacity: 0.8;
 }
 
@@ -70,4 +70,4 @@ button:hover {
 
 .timelog-entry:nth-child(even) {
     background-color: #e9e9e9;
-}
+} */

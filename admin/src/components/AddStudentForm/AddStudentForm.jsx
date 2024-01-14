@@ -1,11 +1,23 @@
 import React, { useState } from 'react';
+import { TextInput, Button, Box, Paper, Grid, Title, Group, Divider } from '@mantine/core';
 
 const AddStudentForm = ({ onSubmit, onCancel }) => {
   const [classes, setClasses] = useState(['']);
 
-  const handleClassChange = (index, value) => {
-    const newClasses = [...classes];
-    newClasses[index] = value;
+  const handleClassChange = (index, part, value) => {
+    const newClasses = classes.map((classItem, i) => {
+        if (index === i) {
+            let parts = classItem.split('-');
+            // Make sure the array has three parts, filling in with empty strings if necessary
+            while (parts.length < 3) {
+                parts.push('');
+            }
+            parts[part] = value; // Update the specific part (0 for name, 1 for section, 2 for professor)
+            return parts.join('-'); // Rejoin the parts into a single string
+        }
+        return classItem;
+    });
+    console.log(newClasses);
     setClasses(newClasses);
   };
 
@@ -31,41 +43,91 @@ const AddStudentForm = ({ onSubmit, onCancel }) => {
     });
   };
 
+  const splitClass = (classItem) => {
+    let parts = classItem.split('-');
+    while (parts.length < 3) {
+      parts.push('');
+    }
+    return parts;
+  };
+
   return (
-    <div>
+    <Paper padding="md" withBorder>
       <form onSubmit={handleSubmit}>
-        <label>
-          Name:
-          <input type="text" name="name" />
-        </label>
-        <label>
-          Student ID:
-          <input type="text" name="studentId" />
-        </label>
-        {classes.map((c, i) => (
-          <div key={i}>
-            <label>
-              Class {i + 1}:
-              <input
-                type="text"
-                value={c}
-                onChange={(e) => handleClassChange(i, e.target.value)}
-              />
-            </label>
-            <button type="button" onClick={() => handleRemoveClass(i)}>
-              Remove Class
-            </button>
-          </div>
-        ))}
-        <button type="button" onClick={handleAddClass}>
-          Add Class
-        </button>
-        <button type="submit">Add Student</button>
-        <button type="button" onClick={onCancel}>
-          Cancel
-        </button>
+        {/* <Title order={3} mb="md">Add Student</Title> */}
+        <Grid>
+          <Grid.Col span={6}>
+            <TextInput
+              label="Name"
+              placeholder="Enter student's name"
+              name="name"
+              required
+            />
+          </Grid.Col>
+          <Grid.Col span={6}>
+            <TextInput
+              label="Student ID"
+              placeholder="Enter student's ID"
+              name="studentId"
+              required
+            />
+          </Grid.Col>
+        </Grid>
+
+        <Title order={4} mt="md" mb="sm">Classes</Title>
+        {classes.map((c, i) => {
+          const [className, classSection, professor] = splitClass(c);
+          return (
+            <Box key={i} mb="sm">
+              <Grid>
+                <Grid.Col span={4}>
+                  <TextInput
+                    label="Class Name"
+                    value={className}
+                    onChange={(e) => handleClassChange(i, 0, e.target.value)}
+                    required
+                  />
+                </Grid.Col>
+                <Grid.Col span={4}>
+                  <TextInput
+                    label="Class Section"
+                    value={classSection}
+                    onChange={(e) => handleClassChange(i, 1, e.target.value)}
+                    required
+                  />
+                </Grid.Col>
+                <Grid.Col span={4}>
+                  <TextInput
+                    label="Professor"
+                    value={professor}
+                    onChange={(e) => handleClassChange(i, 2, e.target.value)}
+                    required
+                  />
+                </Grid.Col>
+              </Grid>
+              <Group position="right" mt="md">
+                <Button type="button" color="red" onClick={() => handleRemoveClass(i)}>
+                  Remove Class
+                </Button>
+              </Group>
+              {i < classes.length - 1 && <Divider />}
+            </Box>
+          );
+        })}
+        <Group position="right" mt="md">
+          <Button type="button" onClick={handleAddClass}>
+            Add Class
+          </Button>
+        </Group>
+
+        <Group position="right" mt="md">
+          <Button type="submit">Add Student</Button>
+          <Button type="button" variant="outline" onClick={onCancel}>
+            Cancel
+          </Button>
+        </Group>
       </form>
-    </div>
+    </Paper>
   );
 };
 

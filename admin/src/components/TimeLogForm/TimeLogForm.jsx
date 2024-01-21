@@ -19,7 +19,6 @@ import {
 import { useForm } from '@mantine/form';
 import { randomId } from '@mantine/hooks';
 import { DateTimePicker, DateInput, TimeInput } from '@mantine/dates';
-import './TimeLogForm.css';
 import {
     getTotalTime,
     secondsToHoursMinutesSeconds,
@@ -139,7 +138,7 @@ function TimeLogForm({ student, onSave, onCancel }) {
                     value={secondsToHoursMinutesSeconds(timeLog.totalTime)}
                     onChange={(value) => form.setFieldValue(`timeStamps.${index}.totalTime`, secondsToHoursMinutesSeconds(value))}
                     />
-                <Button type="button" style={{ alignSelf: 'end' }} onClick={() => form.removeListItem('timeStamps', index)}><IconTrash /></Button>
+                <Button type="button" style={{ alignSelf: 'end' }} color="red" variant="filled" autoContrast onClick={() => form.removeListItem('timeStamps', index)}><IconTrash /></Button>
             </Group>
         </Card>
         </Box>
@@ -174,11 +173,11 @@ function TimeLogForm({ student, onSave, onCancel }) {
                 <Stack>
                 <Box>
                 {fields.length > 0 ? fields : (<p>No time logs found.</p>)}
-                <Button type="button" onClick={handleAddTime}>Add Time Log</Button>
+                <Button type="button" onClick={handleAddTime} color="green" variant="filled" autoContrast>Add Time Log</Button>
                 </Box>
                 <Group>
-                    <Button type="submit">Save</Button>
-                    <Button type="button" onClick={onCancel}>Cancel</Button>
+                    <Button type="submit" color="blue" variant="filled" autoContrast>Save</Button>
+                    <Button type="button" onClick={onCancel} color="black" variant="outline" autoContrast>Cancel</Button>
                 </Group>
                 </Stack>
             </form>

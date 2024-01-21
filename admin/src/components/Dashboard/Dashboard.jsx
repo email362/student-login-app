@@ -120,7 +120,8 @@ function Dashboard() {
         </Text>
       ),
       labels: { cancel: 'Cancel', confirm: 'Delete' },
-      confirmProps: { color: 'red' },
+      confirmProps: { color: 'red', variant: 'filled', autoContrast: true },
+      cancelProps: { color: 'black', variant: 'outline', autoContrast: true },
       onCancel: () => console.log('canceled'),
       onConfirm: () => handleDelete(index),
     });
@@ -142,7 +143,7 @@ function Dashboard() {
           <Title order={1}>MLC Admin Home</Title>
           {!showAddStudentForm && !showEditStudentForm && !showTimeLogForm && (
             <Box>
-              <Button onClick={handleAddStudent} className='btn-view-log'>Add Student</Button>
+              <Button onClick={handleAddStudent} color="green" variant="filled" style={{}} className='btn-view-log' autoContrast>Add Student</Button>
               <Table striped>
                 <thead>
                   <tr>
@@ -167,10 +168,10 @@ function Dashboard() {
                         </td> */}
                         <td>
                           <Group>
-                            <Button onClick={() => handleTimeLog(index)} className='btn-view-log'>Time Log</Button>
-                            <Button onClick={() => handleEdit(index)} className='btn-edit'>Edit</Button>
+                            <Button onClick={() => handleTimeLog(index)} className='btn-view-log' color="blue" variant="filled" autoContrast>Time Log</Button>
+                            <Button onClick={() => handleEdit(index)} className='btn-edit' color="yellow" variant="filled" autoContrast>Edit</Button>
                             {/* <Button onClick={() => handleDelete(index)}>Delete</Button> */}
-                            <Button onClick={() => openDeleteModal(index)} className='btn-delete'>Delete</Button>
+                            <Button onClick={() => openDeleteModal(index)} className='btn-delete' color="red" variant="filled" autoContrast>Delete</Button>
                           </Group>
                         </td>
                       </tr>

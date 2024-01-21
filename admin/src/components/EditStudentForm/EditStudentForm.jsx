@@ -100,11 +100,11 @@ function EditStudentForm({ student, onSave, onCancel }) {
                                 </Fragment>
                             );
                         })}
-                        <Button type="button" onClick={handleAddClass}>Add Class</Button>
+                        <Button type="button" onClick={handleAddClass} color="green" variant="filled" autoContrast>Add Class</Button>
                     </Box>
                     <Group position="right" mt="md">
-                        <Button type="submit">Save</Button>
-                        <Button type="button" color="gray" onClick={onCancel}>Cancel</Button>
+                        <Button type="submit" color="blue" variant="filled" autoContrast>Save</Button>
+                        <Button type="button" color="black" variant="outline" autoContrast onClick={onCancel}>Cancel</Button>
                     </Group>
                 </Stack>
             </form>

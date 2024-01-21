@@ -16,7 +16,7 @@ dayjs.extend(customParseFormat);
 ReactDOM.createRoot(document.getElementById('root')).render(
   // <React.StrictMode>
     // <Dashboard />
-    <MantineProvider>
+    <MantineProvider defaultColorScheme="auto">
       <Dashboard />
     </MantineProvider>
   // </React.StrictMode>,

@@ -11,11 +11,22 @@ function EditStudentForm({ student, onSave, onCancel }) {
         const newClasses = classes.map((classItem, i) => {
             if (index === i) {
                 let parts = classItem.split('-');
+                if(parts.length > 3) {
+                    parts = parts.slice(0, 3);
+                }
+                console.log({
+                    classes,
+                    index,
+                    part,
+                    value,
+                    parts
+                });
                 // Make sure the array has three parts, filling in with empty strings if necessary
                 while (parts.length < 3) {
                     parts.push('');
                 }
                 parts[part] = value; // Update the specific part (0 for name, 1 for section, 2 for professor)
+                console.log('new parts', parts);
                 return parts.join('-'); // Rejoin the parts into a single string
             }
             return classItem;

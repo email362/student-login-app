@@ -115,7 +115,7 @@ function EditStudentForm({ student, onSave, onCancel }) {
                     </Box>
                     <Group position="right" mt="md">
                         <Button type="submit" color="blue" variant="filled" autoContrast>Save</Button>
-                        <Button type="button" color="black" variant="outline" autoContrast onClick={onCancel}>Cancel</Button>
+                        <Button type="button" color="black" variant="default" autoContrast onClick={onCancel}>Cancel</Button>
                     </Group>
                 </Stack>
             </form>

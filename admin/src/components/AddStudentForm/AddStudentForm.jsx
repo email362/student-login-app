@@ -122,7 +122,7 @@ const AddStudentForm = ({ onSubmit, onCancel }) => {
 
         <Group position="right" mt="md">
           <Button type="submit">Add Student</Button>
-          <Button type="button" variant="outline" onClick={onCancel}>
+          <Button type="button" variant="default" onClick={onCancel}>
             Cancel
           </Button>
         </Group>

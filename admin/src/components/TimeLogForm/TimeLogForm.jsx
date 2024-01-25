@@ -177,7 +177,7 @@ function TimeLogForm({ student, onSave, onCancel }) {
                 </Box>
                 <Group>
                     <Button type="submit" color="blue" variant="filled" autoContrast>Save</Button>
-                    <Button type="button" onClick={onCancel} color="black" variant="outline" autoContrast>Cancel</Button>
+                    <Button type="button" onClick={onCancel} color="black" variant="default" autoContrast>Cancel</Button>
                 </Group>
                 </Stack>
             </form>

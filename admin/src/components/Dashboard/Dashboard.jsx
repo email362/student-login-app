@@ -121,7 +121,7 @@ function Dashboard() {
       ),
       labels: { cancel: 'Cancel', confirm: 'Delete' },
       confirmProps: { color: 'red', variant: 'filled', autoContrast: true },
-      cancelProps: { color: 'black', variant: 'outline', autoContrast: true },
+      cancelProps: { color: 'black', variant: 'default', autoContrast: true },
       onCancel: () => console.log('canceled'),
       onConfirm: () => handleDelete(index),
     });
@@ -169,7 +169,7 @@ function Dashboard() {
                         <td>
                           <Group>
                             <Button onClick={() => handleTimeLog(index)} className='btn-view-log' color="blue" variant="filled" autoContrast>Time Log</Button>
-                            <Button onClick={() => handleEdit(index)} className='btn-edit' color="yellow" variant="filled" autoContrast>Edit</Button>
+                            <Button onClick={() => handleEdit(index)} className='btn-edit' color="yellow" variant="filled" autoContrast>Edit Student</Button>
                             {/* <Button onClick={() => handleDelete(index)}>Delete</Button> */}
                             <Button onClick={() => openDeleteModal(index)} className='btn-delete' color="red" variant="filled" autoContrast>Delete</Button>
                           </Group>

@@ -1,134 +1,142 @@
 import React, { useState } from 'react';
-import { TextInput, Button, Box, Paper, Grid, Title, Group, Divider } from '@mantine/core';
+import { TextInput, Button, Card, Box, Text, Paper, Grid, Title, Group, Stack, Divider } from '@mantine/core';
+import { IconTrash } from '@tabler/icons-react';
+import { useForm } from '@mantine/form';
+import { randomId } from '@mantine/hooks';
+
+const studentExists = async (studentId) => {
+    let response = null;
+    let json = null;
+    try {
+        response = await fetch(`https://vivacious-jade-nightgown.cyclic.app/api/student?studentId=${studentId}`);
+    } catch(respErr) {
+        console.log("response error", respErr);
+    }
+    try {
+        json = await response.json();
+    } catch(jsonErr) {
+        console.log("json error", jsonErr);
+    }
+    return (json == null ? false : true);
+}
 
 const AddStudentForm = ({ onSubmit, onCancel }) => {
-  const [classes, setClasses] = useState(['']);
 
-  const handleClassChange = (index, part, value) => {
-    const newClasses = classes.map((classItem, i) => {
-        if (index === i) {
-            let parts = classItem.split('-');
-            // Make sure the array has three parts, filling in with empty strings if necessary
-            while (parts.length < 3) {
-                parts.push('');
+    const handleAddClass = () => {
+        const newClass = {
+            className: '',
+            section: '',
+            professor: ''
+        };
+        form.insertListItem('classes', newClass);
+        // console.log(form.values.classes);
+    };
+
+    const handleSubmit = () => {
+        // event.preventDefault();
+        studentExists(form.values.studentId)
+        .then((duplicateStudent) => {
+            if(!duplicateStudent) {
+                console.log("New student ready to add!");
+                const transformedClasses = form.values.classes.map((classItem) => {
+                    return `${classItem.className}-${classItem.section}-${classItem.professor}`;
+                });
+                const newStudent = {
+                    studentName: form.values.name,
+                    studentId: form.values.studentId,
+                    classes: transformedClasses
+                };
+                onSubmit(newStudent);
+            } else {
+                window.alert(`Sorry student ID: ${form.values.studentId} already exists!`);
             }
-            parts[part] = value; // Update the specific part (0 for name, 1 for section, 2 for professor)
-            return parts.join('-'); // Rejoin the parts into a single string
-        }
-        return classItem;
+        });
+        
+        // console.log("Add Student Form Submitted!");
+    };
+
+    const form = useForm({
+        initialValues: {
+            name: '',
+            studentId: '',
+            classes: [{ className: '', section: '', professor: '' }]
+        },
+        validate: {
+            name: (value) => (value.length < 2 ? 'Name must have at least 2 letters' : null),
+            studentId: (value) => (value.length < 9 ? 'Student ID must have at least 9 digits' : null),
+            classes: {
+                className: (value) => /\b[A-Z]+ \d+\b/.test(value) ? null : 'Class name must be in the format ABC 1234',
+                section: (value) => /^\d{2}$/.test(value) ? null : 'Section must be a 2-digit number',
+                professor: (value) => /^[A-Za-z]+(?:-[A-Za-z]+)?$/.test(value) ? null : 'Professor name must be in the format First-Last or First-Last-Last'
+            }
+        },
     });
-    console.log(newClasses);
-    setClasses(newClasses);
-  };
 
-  const handleAddClass = () => {
-    setClasses([...classes, '']);
-  };
+    const classes = form.values.classes.map((classItem, index) => {
+        // const className = getClassName(classItem);
+        // const section = getClassSection(classItem);
+        // const professor = getProfessor(classItem);
 
-  const handleRemoveClass = (index) => {
-    const newClasses = [...classes];
-    newClasses.splice(index, 1);
-    setClasses(newClasses);
-  };
-
-  const handleSubmit = (event) => {
-    console.log('submitting');
-    event.preventDefault();
-    console.log(event.target.name.value);
-    console.log(event.target.studentId.value);
-    onSubmit({
-      studentName: event.target.name.value,
-      studentId: event.target.studentId.value,
-      classes: classes.filter((c) => c !== ''),
+        return (
+            <Card withBorder shadow="sm" p="md" mb="md" key={index}>
+                <Grid>
+                    <Grid.Col span={4}>
+                        <TextInput
+                            label="Class Name"
+                            {...form.getInputProps(`classes.${index}.className`)}
+                        />
+                    </Grid.Col>
+                    <Grid.Col span={4}>
+                        <TextInput
+                            label="Class Section"
+                            {...form.getInputProps(`classes.${index}.section`)}
+                        />
+                    </Grid.Col>
+                    <Grid.Col span={4}>
+                        <TextInput
+                            label="Professor"
+                            {...form.getInputProps(`classes.${index}.professor`)}
+                        />
+                    </Grid.Col>
+                    <Grid.Col span={12} style={{ alignItems: 'end', display: 'flex' }}>
+                        <Button style={{ alignSelf: 'center' }} color="red" onClick={() => form.removeListItem('classes', index)}><IconTrash /></Button>
+                    </Grid.Col>
+                </Grid>
+            </Card>
+        );
     });
-  };
 
-  const splitClass = (classItem) => {
-    let parts = classItem.split('-');
-    while (parts.length < 3) {
-      parts.push('');
-    }
-    return parts;
-  };
-
-  return (
-    <Paper padding="md" withBorder>
-      <form onSubmit={handleSubmit}>
-        {/* <Title order={3} mb="md">Add Student</Title> */}
-        <Grid>
-          <Grid.Col span={6}>
-            <TextInput
-              label="Name"
-              placeholder="Enter student's name"
-              name="name"
-              required
-            />
-          </Grid.Col>
-          <Grid.Col span={6}>
-            <TextInput
-              label="Student ID"
-              placeholder="Enter student's ID"
-              name="studentId"
-              required
-            />
-          </Grid.Col>
-        </Grid>
-
-        <Title order={4} mt="md" mb="sm">Classes</Title>
-        {classes.map((c, i) => {
-          const [className, classSection, professor] = splitClass(c);
-          return (
-            <Box key={i} mb="sm">
-              <Grid>
-                <Grid.Col span={4}>
-                  <TextInput
-                    label="Class Name"
-                    value={className}
-                    onChange={(e) => handleClassChange(i, 0, e.target.value)}
-                    required
-                  />
-                </Grid.Col>
-                <Grid.Col span={4}>
-                  <TextInput
-                    label="Class Section"
-                    value={classSection}
-                    onChange={(e) => handleClassChange(i, 1, e.target.value)}
-                    required
-                  />
-                </Grid.Col>
-                <Grid.Col span={4}>
-                  <TextInput
-                    label="Professor"
-                    value={professor}
-                    onChange={(e) => handleClassChange(i, 2, e.target.value)}
-                    required
-                  />
-                </Grid.Col>
-              </Grid>
-              <Group position="right" mt="md">
-                <Button type="button" color="red" onClick={() => handleRemoveClass(i)}>
-                  Remove Class
-                </Button>
-              </Group>
-              {i < classes.length - 1 && <Divider />}
-            </Box>
-          );
-        })}
-        <Group position="right" mt="md">
-          <Button type="button" onClick={handleAddClass}>
-            Add Class
-          </Button>
-        </Group>
-
-        <Group position="right" mt="md">
-          <Button type="submit">Add Student</Button>
-          <Button type="button" variant="default" onClick={onCancel}>
-            Cancel
-          </Button>
-        </Group>
-      </form>
-    </Paper>
-  );
+    return (
+        <Paper padding="md">
+            <form onSubmit={form.onSubmit(handleSubmit)}>
+                <Stack spacing="md">
+                    <TextInput
+                        label="Name"
+                        placeholder="Enter student's name"
+                        name="name"
+                        required
+                        {...form.getInputProps('name')}
+                    />
+                    <TextInput
+                        label="Student ID"
+                        placeholder="Enter student's ID"
+                        name="studentId"
+                        required
+                        {...form.getInputProps('studentId')}
+                    />
+                </Stack>
+                <Box>
+                    <Title order={4} mt="md" mb="sm">Classes</Title>
+                    {classes.length ? classes : <Text>No classes added</Text>}
+                </Box>
+                <Group position="right" mt="md">
+                    <Button type="button" color="green" variant="filled" autoContrast onClick={handleAddClass}>Add Class</Button>
+                    <Button type="submit" color="blue" variant="filled" autoContrast >Add Student</Button>
+                    <Button type="button" color="black" variant="default" autoContrast onClick={onCancel}>Cancel</Button>
+                </Group>
+            </form>
+        </Paper>
+    );
 };
 
 export default AddStudentForm;

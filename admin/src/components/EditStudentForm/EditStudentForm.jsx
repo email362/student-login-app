@@ -151,6 +151,7 @@ function EditStudentForm({ student, onSave, onCancel }) {
                     <TextInput
                         label="Student ID"
                         {...form.getInputProps('studentId')}
+                        readOnly
                     />
                 </Stack>
                 <Box>

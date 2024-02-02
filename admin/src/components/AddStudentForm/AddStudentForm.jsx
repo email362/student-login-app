@@ -3,12 +3,13 @@ import { TextInput, Button, Card, Box, Text, Paper, Grid, Title, Group, Stack, D
 import { IconTrash } from '@tabler/icons-react';
 import { useForm } from '@mantine/form';
 import { randomId } from '@mantine/hooks';
+import { URL } from '../../constants';
 
 const studentExists = async (studentId) => {
     let response = null;
     let json = null;
     try {
-        response = await fetch(`https://vivacious-jade-nightgown.cyclic.app/api/student?studentId=${studentId}`);
+        response = await fetch(`${URL}/api/student?studentId=${studentId}`);
     } catch(respErr) {
         console.log("response error", respErr);
     }
@@ -29,11 +30,9 @@ const AddStudentForm = ({ onSubmit, onCancel }) => {
             professor: ''
         };
         form.insertListItem('classes', newClass);
-        // console.log(form.values.classes);
     };
 
     const handleSubmit = () => {
-        // event.preventDefault();
         studentExists(form.values.studentId)
         .then((duplicateStudent) => {
             if(!duplicateStudent) {
@@ -51,8 +50,6 @@ const AddStudentForm = ({ onSubmit, onCancel }) => {
                 window.alert(`Sorry student ID: ${form.values.studentId} already exists!`);
             }
         });
-        
-        // console.log("Add Student Form Submitted!");
     };
 
     const form = useForm({
@@ -73,10 +70,6 @@ const AddStudentForm = ({ onSubmit, onCancel }) => {
     });
 
     const classes = form.values.classes.map((classItem, index) => {
-        // const className = getClassName(classItem);
-        // const section = getClassSection(classItem);
-        // const professor = getProfessor(classItem);
-
         return (
             <Card withBorder shadow="sm" p="md" mb="md" key={index}>
                 <Grid>

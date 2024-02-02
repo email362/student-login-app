@@ -34,10 +34,6 @@ app.use(cors());
 app.use(express.static(__dirname + '/buildAdmin'));
 console.log("dirname", __dirname);
 
-
-// mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
-// mongoose.connect(process.env.MONGODB_URI);
-
 const timeStamp = () => {
   return Number(Date.now());
 };
@@ -50,6 +46,7 @@ const elapsedTime = (start, end) => {
 //await connect to database
 const connectDB = async () => {
   try {
+    console.log(process.env);
     const conn = await connect(process.env.MONGODB_URI);
     console.log(`MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
@@ -80,30 +77,49 @@ app.post('/api/login', async (req, res) => {
     //set login time
     const loginTime = timeStamp();
     //update student login time
-    const updatedStudent = await Student.findOneAndUpdate({ "studentId": studentId }, { "lastLogin": loginTime, "lastClass": className }, { new: true });
-    console.log("updated student", updatedStudent);
+    const updatedStudent = await Student.findOneAndUpdate({ "studentId": studentId }, { "lastLogin": loginTime, "lastClass": className, $push: {loginTimestamps: {"className": className, "loginTime": loginTime, "logoutTime": loginTime, "totalTime": 0  } } }, { new: true });
+    console.log("logged in student", {
+      lastLogin: updatedStudent.lastLogin,
+      lastClass: updatedStudent.lastClass,
+      newTimestamp: updatedStudent.loginTimestamps[updatedStudent.loginTimestamps.length - 1]
+    });
     res.json(updatedStudent);
   } catch (e) {
     console.log(e.message);
     res.status(404).send('Student not found');
   }
-  // list all students
-  // const student = await Student.find().filter((s) => s.studentId === studentId)[0];
-  // console.log(students);
-  // console.log(studentId, student);
-
 });
 
 // handles logout by updating lastLogout, then calculating total time and updating loginTimestamps
 app.post('/api/logout', async (req, res) => {
   const { studentId } = req.body;
-  const student = await Student.findOne({ "studentId": studentId });
-  console.log("last login value: ", student.lastLogin);
-  const logoutTimeStamp = timeStamp();
-  const totalTime = elapsedTime(student.lastLogin, logoutTimeStamp);
-  const updatedStudent = await Student.findOneAndUpdate({ "studentId": studentId }, { "lastLogout": logoutTimeStamp, $push: { loginTimestamps: {"className": student.lastClass, "loginTime": student.lastLogin, "logoutTime": logoutTimeStamp, "totalTime": totalTime  } } }, { new: true });
-  console.log("updated student", updatedStudent);
-  res.json(updatedStudent);
+  try {
+    const student = await Student.findOne({ "studentId": studentId });
+    const index = student.loginTimestamps.findIndex((timestamp) => timestamp.loginTime === student.lastLogin);
+    if (index === -1) {
+      throw new Error("Index not found");
+    }
+    const update = { $set: {} };
+    const logoutTime = timeStamp();
+    const totalTime = elapsedTime(student.loginTimestamps[index].loginTime, logoutTime);
+    const filter = { "studentId": student.studentId };
+
+    update.$set[`loginTimestamps.${index}.logoutTime`] = logoutTime;
+    update.$set[`loginTimestamps.${index}.totalTime`] = totalTime;
+    update.$set["lastLogout"] = logoutTime;
+    
+    const updatedStudent = await Student.findOneAndUpdate(filter, update, { new: true });
+
+    console.log("logged out student", {
+      timeStamp: updatedStudent.loginTimestamps[index],
+      lastLogin: updatedStudent.lastLogin,
+      lastLogout: updatedStudent.lastLogout
+    });
+    res.json(updatedStudent);
+  } catch (e) {
+    console.log(e.message);
+    res.status(404).send('Student not found');
+  }
 });
 
 app.get('/api/students', async (req, res) => {
@@ -160,12 +176,6 @@ app.get('/admin', async (req, res) => {
 app.get('/', async (req, res) => {
   res.json({message: "Welcome to the student login API"});
 });
-
-// // catch all other routes
-// app.get('*', (req, res) => {
-//   // send built folder
-//   res.sendFile(path.join(__dirname, '..', 'student-login-frontend', 'dist', 'index.html'));
-// });
 
 const PORT = process.env.PORT || 5000;
 connectDB().then(() => {

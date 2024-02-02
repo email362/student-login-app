@@ -5,6 +5,7 @@ import AddStudentForm from '../AddStudentForm/AddStudentForm';
 import TimeLogForm from '../TimeLogForm/TimeLogForm';
 import { Table, Button, Title, Box, Modal, Group, Text, MantineProvider, Container } from '@mantine/core';
 import { modals, ModalsProvider } from '@mantine/modals';
+import { URL } from '../../constants';
 
 
 function Dashboard() {
@@ -16,7 +17,7 @@ function Dashboard() {
   const [selectedStudent, setSelectedStudent] = useState(null);
 
   useEffect(() => {
-    fetch('https://vivacious-jade-nightgown.cyclic.app/api/students')
+    fetch(`${URL}/api/students`)
       .then(response => response.json())
       .then(data => {
         console.log(data)
@@ -40,7 +41,7 @@ function Dashboard() {
     newData[index] = updatedStudent;
     setData(newData);
     // send the updated data to the server
-    fetch(`https://vivacious-jade-nightgown.cyclic.app/api/students/${updatedStudent.studentId}`, {
+    fetch(`${URL}/api/students/${updatedStudent.studentId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -61,7 +62,7 @@ function Dashboard() {
     newData.splice(index, 1);
     setData(newData);
     // delete the student from the server
-    fetch(`https://vivacious-jade-nightgown.cyclic.app/api/students/${studentId}`, {
+    fetch(`${URL}/api/students/${studentId}`, {
       method: 'DELETE'
     })
       .then(response => response.json())
@@ -80,13 +81,7 @@ function Dashboard() {
   };
 
   const handleAddStudentSubmit = (newStudent) => {
-    // const form = event.target;
-    // console.log(form);
-    // const studentName = form.elements['name'].value;
-    // const studentId = form.elements['studentId'].value;
-    // const classes = form.elements['classes'].value.split(',');
-    // const newStudent = { studentName, studentId, classes };
-    fetch('https://vivacious-jade-nightgown.cyclic.app/api/students', {
+    fetch(`${URL}/api/students`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -125,16 +120,6 @@ function Dashboard() {
       onCancel: () => console.log('canceled'),
       onConfirm: () => handleDelete(index),
     });
-
-  // const openDeleteModal = () =>
-  //   modals.openConfirmModal({
-  //     title: 'Delete your profile',
-  //     centered: true,
-  //     labels: { confirm: 'Delete account', cancel: "No don't delete it" },
-  //     confirmProps: { color: 'red' },
-  //     onCancel: () => console.log('Cancel'),
-  //     onConfirm: () => console.log('Confirmed'),
-  //   });
 
   return (
     <Container size='xl'>

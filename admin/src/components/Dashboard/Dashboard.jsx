@@ -6,6 +6,7 @@ import TimeLogForm from '../TimeLogForm/TimeLogForm';
 import { Table, Button, Title, Box, Modal, Group, Text, MantineProvider, Container } from '@mantine/core';
 import { modals, ModalsProvider } from '@mantine/modals';
 import { URL } from '../../constants';
+import ImportStudents from '../ImportStudents/ImportStudents';
 
 
 function Dashboard() {
@@ -14,25 +15,29 @@ function Dashboard() {
   const [showAddStudentForm, setShowAddStudentForm] = useState(false);
   const [showEditStudentForm, setShowEditStudentForm] = useState(false);
   const [showTimeLogForm, setShowTimeLogForm] = useState(false);
+  const [showImportStudentsForm, setShowImportStudentsForm] = useState(true); // change this to false before pushing to main
+  const [showDashboard, setShowDashboard] = useState(false); // change this to true before pushing to main
   const [selectedStudent, setSelectedStudent] = useState(null);
 
   useEffect(() => {
     fetch(`${URL}/api/students`)
       .then(response => response.json())
       .then(data => {
-        console.log(data)
+        if(import.meta.env.MODE === 'development') {
+          console.log(data)
+        }
         setData(data)
       })
   }, []);
 
   const handleEdit = (index) => {
     setSelectedStudent(data[index]);
-    setShowEditStudentForm(true);
+    handleDisplay('editStudent');
   };
 
   const handleTimeLog = (index) => {
     setSelectedStudent(data[index]);
-    setShowTimeLogForm(true);
+    handleDisplay('timeLog');
   };
 
   const handleSave = (updatedStudent) => {
@@ -68,16 +73,6 @@ function Dashboard() {
       .then(response => response.json())
       .then(data => console.log(data))
       .catch(error => console.log(error))
-  };
-
-  const handleInputChange = (event, index) => {
-    const newData = [...data];
-    newData[index].classes = event.target.value.split(",");
-    setData(newData);
-  };
-
-  const handleAddStudent = () => {
-    setShowAddStudentForm(true);
   };
 
   const handleAddStudentSubmit = (newStudent) => {
@@ -121,14 +116,43 @@ function Dashboard() {
       onConfirm: () => handleDelete(index),
     });
 
+  const handleDisplay = (showState='') => {
+    setShowAddStudentForm(false);
+    setShowEditStudentForm(false);
+    setShowTimeLogForm(false);
+    setShowImportStudentsForm(false);
+    setShowDashboard(false);
+    switch(showState) {
+      case 'addStudent':
+        setShowAddStudentForm(true);
+        break;
+      case 'editStudent':
+        setShowEditStudentForm(true);
+        break;
+      case 'timeLog':
+        setShowTimeLogForm(true);
+        break;
+      case 'importStudents':
+        setShowImportStudentsForm(true);
+        break;
+      default:
+        setShowDashboard(true);
+    }
+  };
+
+  const cancelView = () => {
+    handleDisplay();
+  };
+
   return (
     <Container size='xl'>
       <ModalsProvider>
         <Box sx={{ padding: '20px' }}>
           <Title order={1}>MLC Admin Home</Title>
-          {!showAddStudentForm && !showEditStudentForm && !showTimeLogForm && (
+          {showDashboard && (
             <Box>
-              <Button onClick={handleAddStudent} color="green" variant="filled" style={{}} className='btn-view-log' autoContrast>Add Student</Button>
+              <Button onClick={() => handleDisplay('addStudent')} color="green" variant="filled" style={{}} className='btn-view-log' autoContrast>Add Student</Button>
+              <Button onClick={() => handleDisplay('importStudents')} color="green" variant="filled" style={{}} className='btn-view-log' autoContrast>Import Students</Button>
               <Table striped>
                 <thead>
                   <tr>
@@ -166,9 +190,11 @@ function Dashboard() {
               </Table>
             </Box>
           )}
-          {showTimeLogForm && (<TimeLogForm student={selectedStudent} onSave={handleSave} onCancel={() => setShowTimeLogForm(false)} />)}
-          {showEditStudentForm && (<EditStudentForm student={selectedStudent} onSave={handleSave} onCancel={() => setShowEditStudentForm(false)} />)}
-          {showAddStudentForm && (<AddStudentForm onSubmit={handleAddStudentSubmit} onCancel={handleCancelAddStudent} />)}
+          {showTimeLogForm && (<TimeLogForm student={selectedStudent} onSave={handleSave} onCancel={cancelView} />)}
+          {showEditStudentForm && (<EditStudentForm student={selectedStudent} onSave={handleSave} onCancel={cancelView} />)}
+          {showAddStudentForm && (<AddStudentForm onSubmit={handleAddStudentSubmit} onCancel={cancelView} />)}
+          {showImportStudentsForm && (<ImportStudents students={data} onCancel={cancelView} />) }
+
 
         {/*
           <Modal

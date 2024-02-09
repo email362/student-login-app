@@ -106,10 +106,11 @@ function TimeLogForm({ student, onSave, onCancel }) {
         <Card shadow='sm' p='xs' mb='sm'>
             <Group justify='space-between'>
                 <Select
-                    data={student.classes}
+                    data={Array.from(new Set([...student.classes, form.values.timeStamps[index].className]))}
                     label="Class:"
                     placeholder="Select class"
                     {...form.getInputProps(`timeStamps.${index}.className`)}
+                    allowDeselect={false}
                     />
                 <DateTimePicker
                     // dropdownType='modal'

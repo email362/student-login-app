@@ -1,5 +1,5 @@
 import { useState, Fragment } from 'react';
-import { TextInput, Text, Button, Title, Box, Group, Stack, Paper, Card, Grid, Divider, ActionIcon } from '@mantine/core';
+import { TextInput, Text, Button, Title, Box, Group, Stack, Paper, Card, Grid, Divider, ActionIcon, Checkbox } from '@mantine/core';
 import { IconTrash } from '@tabler/icons-react';
 import { useForm } from '@mantine/form';
 import { randomId } from '@mantine/hooks';

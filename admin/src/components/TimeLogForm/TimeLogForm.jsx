@@ -101,12 +101,25 @@ function TimeLogForm({ student, onSave, onCancel }) {
         // form.setFieldValue(`timeStamps.${index}.logoutTime`, event.getTime())
     };
     
-    const fields = form.values.timeStamps.map((timeLog, index) => (
+    const fields = form.values.timeStamps.map((timeLog, index) => {
+    // logic to have the classes and the current class in the select input for the time log
+    let data = [];
+    if (student.classes) {
+        data = new Set([...student.classes]);
+    }
+    if (timeLog.hasOwnProperty('_id') && timeLog._id !== '' && timeLog._id !== null) {
+        let matchingTimeStamp = student.loginTimestamps.find((time) => time._id === timeLog._id);
+        if(matchingTimeStamp) {
+            data.add(matchingTimeStamp.className);
+        }
+    }
+    data = Array.from(data);
+    return (
         <Box key={`timelog-${timeLog._id}`}>
         <Card shadow='sm' p='xs' mb='sm'>
             <Group justify='space-between'>
                 <Select
-                    data={Array.from(new Set([...student.classes, form.values.timeStamps[index].className]))}
+                    data={data}
                     label="Class:"
                     placeholder="Select class"
                     {...form.getInputProps(`timeStamps.${index}.className`)}
@@ -143,7 +156,7 @@ function TimeLogForm({ student, onSave, onCancel }) {
             </Group>
         </Card>
         </Box>
-    ));
+    )});
 
     const handleSubmit = () => {
         console.log(student.loginTimestamps);

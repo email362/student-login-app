@@ -158,10 +158,12 @@ function EditStudentForm({ student, onSave, onCancel }) {
                     <Title order={4}>Classes</Title>
                     {classes.length ? classes : <Text>No classes added</Text>}
                 </Box>
-                <Group position="right" mt="md">
+                <Group position="right" mt="md" justify="space-between">
                     <Button type="button" color="green" variant="filled" autoContrast onClick={handleAddClass}>Add Class</Button>
-                    <Button type="submit" color="blue" variant="filled" autoContrast >Save</Button>
-                    <Button type="button" color="black" variant="default" autoContrast onClick={onCancel}>Cancel</Button>
+                    <Box>
+                        <Button type="submit" color="blue" variant="filled" autoContrast mr={"sm"}>Save</Button>
+                        <Button type="button" color="black" variant="default" autoContrast onClick={onCancel}>Cancel</Button>
+                    </Box>
                 </Group>
             </form>
         </Paper>

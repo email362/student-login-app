@@ -10,12 +10,12 @@ const studentExists = async (studentId) => {
     let json = null;
     try {
         response = await fetch(`${URL}/api/student?studentId=${studentId}`);
-    } catch(respErr) {
+    } catch (respErr) {
         console.log("response error", respErr);
     }
     try {
         json = await response.json();
-    } catch(jsonErr) {
+    } catch (jsonErr) {
         console.log("json error", jsonErr);
     }
     return (json == null ? false : true);
@@ -34,22 +34,22 @@ const AddStudentForm = ({ onSubmit, onCancel }) => {
 
     const handleSubmit = () => {
         studentExists(form.values.studentId)
-        .then((duplicateStudent) => {
-            if(!duplicateStudent) {
-                console.log("New student ready to add!");
-                const transformedClasses = form.values.classes.map((classItem) => {
-                    return `${classItem.className}-${classItem.section}-${classItem.professor}`;
-                });
-                const newStudent = {
-                    studentName: form.values.name,
-                    studentId: form.values.studentId,
-                    classes: transformedClasses
-                };
-                onSubmit(newStudent);
-            } else {
-                window.alert(`Sorry student ID: ${form.values.studentId} already exists!`);
-            }
-        });
+            .then((duplicateStudent) => {
+                if (!duplicateStudent) {
+                    console.log("New student ready to add!");
+                    const transformedClasses = form.values.classes.map((classItem) => {
+                        return `${classItem.className}-${classItem.section}-${classItem.professor}`;
+                    });
+                    const newStudent = {
+                        studentName: form.values.name,
+                        studentId: form.values.studentId,
+                        classes: transformedClasses
+                    };
+                    onSubmit(newStudent);
+                } else {
+                    window.alert(`Sorry student ID: ${form.values.studentId} already exists!`);
+                }
+            });
     };
 
     const form = useForm({
@@ -122,10 +122,12 @@ const AddStudentForm = ({ onSubmit, onCancel }) => {
                     <Title order={4} mt="md" mb="sm">Classes</Title>
                     {classes.length ? classes : <Text>No classes added</Text>}
                 </Box>
-                <Group position="right" mt="md">
+                <Group position="right" mt="md" justify='space-between'>
                     <Button type="button" color="green" variant="filled" autoContrast onClick={handleAddClass}>Add Class</Button>
-                    <Button type="submit" color="blue" variant="filled" autoContrast >Add Student</Button>
-                    <Button type="button" color="black" variant="default" autoContrast onClick={onCancel}>Cancel</Button>
+                    <Box>
+                        <Button type="submit" color="blue" variant="filled" autoContrast mr={"sm"}>Add Student</Button>
+                        <Button type="button" color="black" variant="default" autoContrast onClick={onCancel}>Cancel</Button>
+                    </Box>
                 </Group>
             </form>
         </Paper>

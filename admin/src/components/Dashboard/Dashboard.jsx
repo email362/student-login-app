@@ -1,43 +1,46 @@
 import { useEffect, useState } from 'react'
-import './Dashboard.css'
 import EditStudentForm from '../EditStudentForm/EditStudentForm';
 import AddStudentForm from '../AddStudentForm/AddStudentForm';
 import TimeLogForm from '../TimeLogForm/TimeLogForm';
-import { Table, Button, Title, Box, Modal, Group, Text, MantineProvider, Container } from '@mantine/core';
+import { Table, Button, Title, Box, Modal, Group, Text, MantineProvider, Container, TextInput } from '@mantine/core';
+import { useDebouncedValue } from '@mantine/hooks';
 import { modals, ModalsProvider } from '@mantine/modals';
 import { URL } from '../../constants';
 import ImportStudents from '../ImportStudents/ImportStudents';
+import { IconTrash, IconSearch } from '@tabler/icons-react';
+import './Dashboard.css'
 
 
 function Dashboard() {
 
   const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
   const [showAddStudentForm, setShowAddStudentForm] = useState(false);
   const [showEditStudentForm, setShowEditStudentForm] = useState(false);
   const [showTimeLogForm, setShowTimeLogForm] = useState(false);
   const [showImportStudentsForm, setShowImportStudentsForm] = useState(true); // change this to false before pushing to main
   const [showDashboard, setShowDashboard] = useState(false); // change this to true before pushing to main
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const [searchVal, setSearchVal] = useState('');
+  const [debounced] = useDebouncedValue(searchVal, 200);
 
   useEffect(() => {
     fetch(`${URL}/api/students`)
       .then(response => response.json())
       .then(data => {
-        if(import.meta.env.MODE === 'development') {
-          console.log(data)
-        }
+        if (import.meta.env.MODE === 'development') console.log('data', data);
         setData(data)
       })
   }, []);
 
   const handleEdit = (index) => {
-    setSelectedStudent(data[index]);
-    handleDisplay('editStudent');
+    setSelectedStudent(filteredData[index]);
+    setShowEditStudentForm(true);
   };
 
   const handleTimeLog = (index) => {
-    setSelectedStudent(data[index]);
-    handleDisplay('timeLog');
+    setSelectedStudent(filteredData[index]);
+    setShowTimeLogForm(true);
   };
 
   const handleSave = (updatedStudent) => {
@@ -58,21 +61,29 @@ function Dashboard() {
       .catch(error => console.log(error))
     setShowEditStudentForm(false);
     setShowTimeLogForm(false);
-    
+
   };
 
   const handleDelete = (index) => {
-    const newData = [...data];
-    const studentId = newData[index].studentId;
-    newData.splice(index, 1);
-    setData(newData);
+    const studentId = filteredData[index].studentId;
+    const newData = data.filter(student => student.studentId !== studentId);
     // delete the student from the server
     fetch(`${URL}/api/students/${studentId}`, {
       method: 'DELETE'
     })
       .then(response => response.json())
-      .then(data => console.log(data))
-      .catch(error => console.log(error))
+      .then(data => {
+        console.log('success', studentId)
+        setData(newData);
+      })
+      .catch(error => {
+        console.log(error)
+        alert('Failed to delete student');
+      })
+  };
+
+  const handleAddStudent = () => {
+    setShowAddStudentForm(true);
   };
 
   const handleAddStudentSubmit = (newStudent) => {
@@ -85,7 +96,7 @@ function Dashboard() {
     })
       .then(response => response.json())
       .then(res => {
-        if(res.status === "Success") {
+        if (res.status === "Success") {
           setData([...data, res.student]);
         }
         setShowAddStudentForm(false);
@@ -100,7 +111,7 @@ function Dashboard() {
     setShowAddStudentForm(false);
   };
 
-  const openDeleteModal = (index) => 
+  const openDeleteModal = (index) =>
     modals.openConfirmModal({
       title: 'Delete Student',
       centered: true,
@@ -115,6 +126,18 @@ function Dashboard() {
       onCancel: () => console.log('canceled'),
       onConfirm: () => handleDelete(index),
     });
+  
+  const handleSearch = () => {
+    if (debounced) {
+      setFilteredData(data.filter(student => student.studentName.toLowerCase().includes(debounced.toLowerCase()) || student.studentId.toLowerCase().includes(debounced.toLowerCase())));
+    } else {
+      setFilteredData(data);
+    }
+  }
+
+  useEffect(() => {
+    handleSearch();
+  }, [debounced, data]);
 
   const handleDisplay = (showState='') => {
     setShowAddStudentForm(false);
@@ -153,6 +176,18 @@ function Dashboard() {
             <Box>
               <Button onClick={() => handleDisplay('addStudent')} color="green" variant="filled" style={{}} className='btn-view-log' autoContrast>Add Student</Button>
               <Button onClick={() => handleDisplay('importStudents')} color="green" variant="filled" style={{}} className='btn-view-log' autoContrast>Import Students</Button>
+              <Box display={"flex"} justify="flex-start">
+                <Button onClick={handleAddStudent} color="green" variant="filled" style={{}} className='btn-view-log' autoContrast>Add Student</Button>
+                <TextInput
+                  placeholder="Search"
+                  size="sm"
+                  leftSection={<IconSearch />}
+                  styles={{ section: { pointerEvents: 'none' } }}
+                  mb="sm"
+                  value={searchVal}
+                  onChange={(e) => setSearchVal(e.target.value)}
+                />
+              </Box>
               <Table striped>
                 <thead>
                   <tr>
@@ -165,16 +200,27 @@ function Dashboard() {
                   </tr>
                 </thead>
                 <tbody className='students-body'>
-                  {data.map((item, index) => {
+                  {filteredData.map((item, index) => {
                     const { studentName, studentId, classes, loginTimestamps } = item;
+                    let timePerClassMap = new Map();
+                    loginTimestamps.forEach((timestamp) => {
+                      // console.log('timestamp', timestamp);
+                      if (timePerClassMap.has(timestamp.className)) {
+                        timePerClassMap.set(timestamp.className, timePerClassMap.get(timestamp.className) + timestamp.totalTime);
+                      } else {
+                        timePerClassMap.set(timestamp.className, timestamp.totalTime);
+                      }
+                    });
+                    const formattedTimePerClass = Array.from(timePerClassMap).map(([className, totalTime]) => {
+                      return `${className}: ${(totalTime / 3600).toFixed(2)}`;
+                    });
                     return (
                       <tr key={studentId}>
                         <td>{studentName}</td>
                         <td>{studentId}</td>
                         <td>{classes.join(", ")}</td>
-                        <td>{((loginTimestamps.reduce((acc, curr) => curr.totalTime + acc, 0) / 3600)).toFixed(2)}</td>
-                        {/* <td>
-                        </td> */}
+                        {/*<td>{((loginTimestamps.reduce((acc, curr) => curr.totalTime + acc, 0) / 3600)).toFixed(2)}</td>*/}
+                        <td>{formattedTimePerClass.length ? formattedTimePerClass.join(", ") : "No Time Logged"}</td>
                         <td>
                           <Group>
                             <Button onClick={() => handleTimeLog(index)} className='btn-view-log' color="blue" variant="filled" autoContrast>Time Log</Button>
@@ -196,7 +242,7 @@ function Dashboard() {
           {showImportStudentsForm && (<ImportStudents students={data} onCancel={cancelView} />) }
 
 
-        {/*
+          {/*
           <Modal
           opened={showAddStudentForm}
           onClose={() => setShowAddStudentForm(false)}
@@ -208,7 +254,7 @@ function Dashboard() {
           </Modal>
         */}
 
-        {/*
+          {/*
           <Modal
             opened={showEditStudentForm}
             onClose={() => setShowEditStudentForm(false)}
@@ -220,7 +266,7 @@ function Dashboard() {
           </Modal>
         */}
 
-        {/*
+          {/*
           <Modal
             opened={showTimeLogForm}
             onClose={() => setShowTimeLogForm(false)}
@@ -233,7 +279,7 @@ function Dashboard() {
         */}
         </Box>
       </ModalsProvider>
-      </Container>
+    </Container>
   )
 }
 

@@ -1,5 +1,5 @@
 import { useState, Fragment } from 'react';
-import { TextInput, Text, Button, Title, Box, Group, Stack, Paper, Card, Grid, Divider, ActionIcon } from '@mantine/core';
+import { TextInput, Text, Button, Title, Box, Group, Stack, Paper, Card, Grid, Divider, ActionIcon, Checkbox } from '@mantine/core';
 import { IconTrash } from '@tabler/icons-react';
 import { useForm } from '@mantine/form';
 import { randomId } from '@mantine/hooks';
@@ -158,10 +158,12 @@ function EditStudentForm({ student, onSave, onCancel }) {
                     <Title order={4}>Classes</Title>
                     {classes.length ? classes : <Text>No classes added</Text>}
                 </Box>
-                <Group position="right" mt="md">
+                <Group position="right" mt="md" justify="space-between">
                     <Button type="button" color="green" variant="filled" autoContrast onClick={handleAddClass}>Add Class</Button>
-                    <Button type="submit" color="blue" variant="filled" autoContrast >Save</Button>
-                    <Button type="button" color="black" variant="default" autoContrast onClick={onCancel}>Cancel</Button>
+                    <Box>
+                        <Button type="submit" color="blue" variant="filled" autoContrast mr={"sm"}>Save</Button>
+                        <Button type="button" color="black" variant="default" autoContrast onClick={onCancel}>Cancel</Button>
+                    </Box>
                 </Group>
             </form>
         </Paper>

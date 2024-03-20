@@ -135,6 +135,21 @@ app.get('/api/students', async (req, res) => {
 app.post('/api/students', async (req, res) => {
   const { studentName, studentId, classes } = req.body;
   console.log(studentName, studentId, classes);
+  // look for student by studentId
+  let studentExists = true;
+  // check if student exists
+  try {
+    const findStudentRequest = await Student.findOne({ studentId });
+    studentExists = findStudentRequest !== null;
+    console.log(`Is ${studentId} new? `,!studentExists);
+  } catch (e) {
+    console.log(e.message);
+  }
+  // if student exists, return error
+  if (studentExists) {
+    return res.json({status:"Failure",message:'Student already exists'});
+  }
+  // if student does not exist, create student
   try {
     const student = await Student.create({ studentName, studentId, classes });
     res.json({status:"Success", student});

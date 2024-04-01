@@ -62,7 +62,7 @@ app.get('/api/student', async (req, res) => {
   console.log(req.query);
   try {
     const student = await Student.findOne({"studentId": req.query.studentId});
-    res.json(student);
+    res.status(200).json(student);
   } catch(e) {
     console.log(e.message);
     res.status(404).send('Student not found');
@@ -83,7 +83,7 @@ app.post('/api/login', async (req, res) => {
       lastClass: updatedStudent.lastClass,
       newTimestamp: updatedStudent.loginTimestamps[updatedStudent.loginTimestamps.length - 1]
     });
-    res.json(updatedStudent);
+    res.status(200).json(updatedStudent);
   } catch (e) {
     console.log(e.message);
     res.status(404).send('Student not found');
@@ -115,7 +115,7 @@ app.post('/api/logout', async (req, res) => {
       lastLogin: updatedStudent.lastLogin,
       lastLogout: updatedStudent.lastLogout
     });
-    res.json(updatedStudent);
+    res.status(200).json(updatedStudent);
   } catch (e) {
     console.log(e.message);
     res.status(404).send('Student not found');
@@ -126,9 +126,9 @@ app.get('/api/students', async (req, res) => {
   let students = null;
   try {
     students = await Student.find({});
-    res.json(students);
+    res.status(200).json(students);
   } catch {
-    res.json({message:'Students not found'});
+    res.status(404).json({message:'Students not found'});
   }
 });
 
@@ -147,14 +147,14 @@ app.post('/api/students', async (req, res) => {
   }
   // if student exists, return error
   if (studentExists) {
-    return res.json({status:"Failure",message:'Student already exists'});
+    return res.status(409).json({status:"Failure",message:'Student already exists'});
   }
   // if student does not exist, create student
   try {
     const student = await Student.create({ studentName, studentId, classes });
-    res.json({status:"Success", student});
+    res.status(201).json({status:"Success", student});
   } catch {
-    res.json({status:"Faliure",message:'Student not created'});
+    res.status(400).json({status:"Failure",message:'Student not created'});
   }
 });
 
@@ -163,9 +163,13 @@ app.delete('/api/students/:studentId', async (req, res) => {
   console.log(studentId);
   try {
     const deleted = await Student.findOneAndDelete({ studentId });
-    res.json({status:"Success", message:'Student deleted', deleted});
+    if (deleted) {
+      res.status(200).json({status:"Success", message:'Student deleted', deleted});
+    } else {
+      res.status(404).json({status:"Failure",message:'Student not found'});
+    }
   } catch {
-    res.json({status:"Faliure",message:'Student not deleted'});
+    res.status(400).json({status:"Failure",message:'Student not deleted'});
   }
 });
 
@@ -175,10 +179,10 @@ app.put('/api/students/:studentId', async (req, res) => {
   console.log(studentId, studentName, classes);
   try {
     const updated = await Student.findOneAndUpdate({ studentId }, { studentName, classes, lastLogin, lastLogout, lastClass, loginTimestamps }, { new: true });
-    res.json({status:"Success", message:'Student updated', updated});
+    res.status(200).json({status:"Success", message:'Student updated', updated});
   } catch(e) {
     console.log("error",e.message);
-    res.json({status:"Failure",message:'Student not updated'});
+    res.status(404).json({status:"Failure",message:'Student not updated'});
   }
 });
 
@@ -189,7 +193,7 @@ app.get('/admin', async (req, res) => {
 
 //default homepage
 app.get('/', async (req, res) => {
-  res.json({message: "Welcome to the student login API"});
+  res.status(200).json({message: "Welcome to the student login API"});
 });
 
 const PORT = process.env.PORT || 5000;

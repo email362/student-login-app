@@ -6,10 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon index.js",
-    "build-dev": "cd ./admin && npm run build && cd .. && nodemon index.js",
-    "dev-admin": "cd ./admin && npm run dev",
-    "dev-backend": "npm run dev && npm run dev-admin",
-    "build": "node index.js"
+    "build": "npm install"
   },
   "keywords": [],
   "author": "",

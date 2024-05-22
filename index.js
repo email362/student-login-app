@@ -2,7 +2,6 @@ import express, { json } from 'express';
 import { connect, Schema, model } from 'mongoose';
 import cors from 'cors';
 import { config } from 'dotenv';
-import { join } from 'path';
 import * as url from 'url';
 
 
@@ -184,11 +183,6 @@ app.put('/api/students/:studentId', async (req, res) => {
     console.log("error",e.message);
     res.status(404).json({status:"Failure",message:'Student not updated'});
   }
-});
-
-
-app.get('/admin', async (req, res) => {
-  res.sendFile(join(__dirname, 'buildAdmin', 'adminHome.html'));
 });
 
 //default homepage
